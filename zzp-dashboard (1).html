@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZZP Pro — Premium Administratie Dashboard 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --primary-dark: #E85A2A;
+            --secondary: #1E3A8A;
+            --secondary-light: #3B82F6;
+            --accent: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            
+            --bg-main: #0F172A;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-glass: rgba(51, 65, 85, 0.4);
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border: rgba(148, 163, 184, 0.1);
+            
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+        
+        [data-theme="light"] {
+            --bg-main: #F8FAFC;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-glass: rgba(241, 245, 249, 0.6);
+            --text-primary: #0F172A;
+            --text-secondary: #64748B;
+            --border: rgba(100, 116, 139, 0.2);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 107, 53, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Header */
+        header {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 2rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .theme-toggle {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--bg-card);
+            transform: translateY(-2px);
+        }
+        
+        .user-badge {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Navigation */
+        nav {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            left: 0;
+            top: 76px;
+            bottom: 0;
+            width: 280px;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+            z-index: 999;
+        }
+        
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+        
+        .nav-title {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+        }
+        
+        .nav-item.active {
+            background: var(--bg-glass);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        
+        /* Main Content */
+        main {
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: calc(100vh - 76px);
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary-light));
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-glass);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .stat-change.positive {
+            color: var(--accent);
+        }
+        
+        .stat-change.negative {
+            color: var(--danger);
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            transform: translateY(-2px);
+        }
+        
+        .btn-icon {
+            padding: 0.75rem;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: var(--bg-glass);
+        }
+        
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        td {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: var(--bg-glass);
+        }
+        
+        /* Status Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent);
+        }
+        
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+        
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+        
+        .badge-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--secondary-light);
+        }
+        
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .file-upload:hover,
+        .file-upload.drag-over {
+            border-color: var(--primary);
+            background: var(--bg-glass);
+        }
+        
+        .file-upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .file-upload-text {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-upload-hint {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-glass);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.3s ease;
+        }
+        
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 1rem 0;
+        }
+        
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .hidden { display: none; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-1 { gap: 0.5rem; }
+        .gap-2 { gap: 1rem; }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            nav {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            nav.active {
+                transform: translateX(0);
+            }
+            
+            main {
+                margin-left: 0;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .header-content {
+                padding: 1rem;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">
+                <div class="logo-icon">Z</div>
+                <span>ZZP Pro</span>
+            </a>
+            <div class="header-actions">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <span id="theme-icon">☀️</span>
+                </button>
+                <div class="user-badge">
+                    <div class="user-avatar">JD</div>
+                    <span>Jan de Vries</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav id="sidebar">
+        <div class="nav-section">
+            <div class="nav-title">Overzicht</div>
+            <a class="nav-item active" data-page="dashboard">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">Administratie</div>
+            <a class="nav-item" data-page="facturen">
+                <span class="nav-icon">📄</span>
+                <span>Facturen</span>
+            </a>
+            <a class="nav-item" data-page="bedrijven">
+                <span class="nav-icon">🏢</span>
+                <span>Bedrijven / Klanten</span>
+            </a>
+            <a class="nav-item" data-page="uitgaven">
+                <span class="nav-icon">💰</span>
+                <span>Uitgaven & Kosten</span>
+            </a>
+            <a class="nav-item" data-page="uren">
+                <span class="nav-icon">⏱️</span>
+                <span>Urenregistratie</span>
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">Belastingen</div>
+            <a class="nav-item" data-page="btw">
+                <span class="nav-icon">🧾</span>
+                <span>BTW-Aangifte</span>
+            </a>
+            <a class="nav-item" data-page="ib">
+                <span class="nav-icon">💼</span>
+                <span>Inkomstenbelasting</span>
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">Rapportages</div>
+            <a class="nav-item" data-page="jaarrekening">
+                <span class="nav-icon">📈</span>
+                <span>Jaarrekening & SBR</span>
+            </a>
+            <a class="nav-item" data-page="bank">
+                <span class="nav-icon">🏦</span>
+                <span>Bankrekeningen</span>
+            </a>
+            <a class="nav-item" data-page="documenten">
+                <span class="nav-icon">📁</span>
+                <span>Documenten</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Dashboard Page -->
+        <div id="page-dashboard" class="page-content">
+            <div class="page-header">
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-subtitle">Welkom terug, Jan! Hier is je overzicht voor 2026.</p>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="dashboard-grid">
+                <div class="stat-card fade-in stagger-1">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-label">Omzet YTD</div>
+                            <div class="stat-value">€87.450</div>
+                            <div class="stat-change positive">
+                                ↑ 12.3% vs vorig jaar
+                            </div>
+                        </div>
+                        <div class="stat-icon">💰</div>
+                    </div>
+                </div>
+
+                <div class="stat-card fade-in stagger-2">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-label">Winst YTD</div>
+                            <div class="stat-value">€62.890</div>
+                            <div class="stat-change positive">
+                                ↑ 8.7% vs vorig jaar
+                            </div>
+                        </div>
+                        <div class="stat-icon">📈</div>
+                    </div>
+                </div>
+
+                <div class="stat-card fade-in stagger-3">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-label">BTW-Saldo</div>
+                            <div class="stat-value">€3.247</div>
+                            <div class="stat-change" style="color: var(--text-secondary);">
+                                Te betalen Q1 2026
+                            </div>
+                        </div>
+                        <div class="stat-icon">🧾</div>
+                    </div>
+                </div>
+
+                <div class="stat-card fade-in stagger-4">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-label">Openstaand</div>
+                            <div class="stat-value">€12.400</div>
+                            <div class="stat-change negative">
+                                3 facturen verlopen
+                            </div>
+                        </div>
+                        <div class="stat-icon">⚠️</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Snelle Acties</h2>
+                </div>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="openModal('modal-factuur')">
+                        ➕ Nieuwe Factuur
+                    </button>
+                    <button class="btn btn-secondary" onclick="openModal('modal-uitgave')">
+                        💸 Nieuwe Uitgave
+                    </button>
+                    <button class="btn btn-secondary" onclick="changePage('btw')">
+                        📊 BTW-Aangifte Indienen
+                    </button>
+                    <button class="btn btn-secondary" onclick="changePage('uren')">
+                        ⏱️ Uren Registreren
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recent Invoices -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Recente Facturen</h2>
+                    <button class="btn btn-secondary btn-icon" onclick="changePage('facturen')">
+                        →
+                    </button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Factuurnr.</th>
+                                <th>Klant</th>
+                                <th>Datum</th>
+                                <th>Bedrag</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-invoices">
+                            <tr>
+                                <td><strong>2026-001</strong></td>
+                                <td>TechCorp B.V.</td>
+                                <td>15 feb 2026</td>
+                                <td><strong>€4.250,00</strong></td>
+                                <td><span class="badge badge-success">Betaald</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>2026-002</strong></td>
+                                <td>InnovatiePartners GmbH</td>
+                                <td>10 feb 2026</td>
+                                <td><strong>€3.800,00</strong></td>
+                                <td><span class="badge badge-warning">Openstaand</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>2026-003</strong></td>
+                                <td>Digital Solutions Ltd</td>
+                                <td>5 feb 2026</td>
+                                <td><strong>€5.200,00</strong></td>
+                                <td><span class="badge badge-danger">Verlopen</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tax Progress -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Urencriterium 2026</h2>
+                    <span style="color: var(--text-secondary); font-size: 0.875rem;">
+                        748 / 1.225 uur (61%)
+                    </span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 61%;"></div>
+                </div>
+                <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.875rem;">
+                    Je bent goed op weg! Nog 477 uur te gaan dit jaar.
+                </p>
+            </div>
+        </div>
+
+        <!-- Other pages will be loaded dynamically -->
+        <div id="page-facturen" class="page-content hidden"></div>
+        <div id="page-bedrijven" class="page-content hidden"></div>
+        <div id="page-uitgaven" class="page-content hidden"></div>
+        <div id="page-uren" class="page-content hidden"></div>
+        <div id="page-btw" class="page-content hidden"></div>
+        <div id="page-ib" class="page-content hidden"></div>
+        <div id="page-jaarrekening" class="page-content hidden"></div>
+        <div id="page-bank" class="page-content hidden"></div>
+        <div id="page-documenten" class="page-content hidden"></div>
+    </main>
+
+    <!-- Modal: Nieuwe Factuur -->
+    <div id="modal-factuur" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Nieuwe Factuur</h2>
+                <button class="modal-close" onclick="closeModal('modal-factuur')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="invoice-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Factuurnummer *</label>
+                            <input type="text" class="form-input" id="invoice-number" value="2026-004" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Factuurdatum *</label>
+                            <input type="date" class="form-input" id="invoice-date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Klant *</label>
+                        <select class="form-select" id="invoice-client" required>
+                            <option value="">Selecteer klant...</option>
+                            <option value="techcorp">TechCorp B.V. (NL)</option>
+                            <option value="innovatie">InnovatiePartners GmbH (DE)</option>
+                            <option value="digital">Digital Solutions Ltd (UK)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Omschrijving *</label>
+                        <textarea class="form-textarea" id="invoice-description" placeholder="Beschrijf de geleverde diensten..." required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Aantal uren</label>
+                            <input type="number" class="form-input" id="invoice-hours" step="0.5" placeholder="40">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Uurtarief (excl. BTW)</label>
+                            <input type="number" class="form-input" id="invoice-rate" step="0.01" placeholder="85.00">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Subtotaal (excl. BTW)</label>
+                            <input type="number" class="form-input" id="invoice-subtotal" step="0.01" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">BTW-Tarief</label>
+                            <select class="form-select" id="invoice-vat-rate">
+                                <option value="21">21% (NL standaard)</option>
+                                <option value="9">9% (NL verlaagd)</option>
+                                <option value="0-reversecharge">0% (Verleggingsregeling EU)</option>
+                                <option value="0-export">0% (Export niet-EU)</option>
+                                <option value="kor">Vrijgesteld (KOR)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Totaalbedrag (incl. BTW)</label>
+                        <input type="text" class="form-input" id="invoice-total" readonly style="font-weight: 700; font-size: 1.25rem;">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Betalingstermijn</label>
+                        <select class="form-select" id="invoice-payment-term">
+                            <option value="14">14 dagen</option>
+                            <option value="30">30 dagen</option>
+                            <option value="60">60 dagen</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Opmerkingen</label>
+                        <textarea class="form-textarea" id="invoice-notes" placeholder="Eventuele aanvullende informatie..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modal-factuur')">Annuleren</button>
+                <button class="btn btn-primary" onclick="saveInvoice()">💾 Factuur Opslaan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Nieuwe Uitgave -->
+    <div id="modal-uitgave" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Nieuwe Uitgave</h2>
+                <button class="modal-close" onclick="closeModal('modal-uitgave')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="expense-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Datum *</label>
+                            <input type="date" class="form-input" id="expense-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bedrag (incl. BTW) *</label>
+                            <input type="number" class="form-input" id="expense-amount" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Categorie *</label>
+                        <select class="form-select" id="expense-category" required>
+                            <option value="">Selecteer categorie...</option>
+                            <option value="kantoor">Kantoorkosten</option>
+                            <option value="huisvesting">Huisvestingskosten</option>
+                            <option value="vervoer">Vervoerskosten</option>
+                            <option value="reis">Reiskosten</option>
+                            <option value="telefoon">Telefoon & Internet</option>
+                            <option value="verzekering">Verzekeringen</option>
+                            <option value="software">Abonnementen & Software</option>
+                            <option value="representatie">Representatiekosten</option>
+                            <option value="overig">Overige bedrijfskosten</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Omschrijving *</label>
+                        <input type="text" class="form-input" id="expense-description" placeholder="Bijv. Adobe Creative Cloud abonnement" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">BTW-bedrag</label>
+                            <input type="number" class="form-input" id="expense-vat" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Zakelijk percentage</label>
+                            <input type="number" class="form-input" id="expense-business-percent" value="100" min="0" max="100">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Bonnetje / Factuur uploaden</label>
+                        <div class="file-upload" id="expense-file-upload">
+                            <div class="file-upload-icon">📎</div>
+                            <div class="file-upload-text">Sleep bestand hierheen of klik om te uploaden</div>
+                            <div class="file-upload-hint">PDF, JPG, PNG (max 25MB)</div>
+                            <input type="file" id="expense-file" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modal-uitgave')">Annuleren</button>
+                <button class="btn btn-primary" onclick="saveExpense()">💾 Uitgave Opslaan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App State
+        const appState = {
+            invoices: [],
+            expenses: [],
+            clients: [],
+            currentPage: 'dashboard',
+            theme: 'dark'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+            setupEventListeners();
+            loadSampleData();
+        });
+
+        function initializeApp() {
+            // Load from localStorage
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            appState.theme = savedTheme;
+            updateThemeIcon();
+
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            const invoiceDateInput = document.getElementById('invoice-date');
+            const expenseDateInput = document.getElementById('expense-date');
+            if (invoiceDateInput) invoiceDateInput.value = today;
+            if (expenseDateInput) expenseDateInput.value = today;
+        }
+
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = item.getAttribute('data-page');
+                    if (page) changePage(page);
+                });
+            });
+
+            // Invoice form calculations
+            const hoursInput = document.getElementById('invoice-hours');
+            const rateInput = document.getElementById('invoice-rate');
+            const vatRateSelect = document.getElementById('invoice-vat-rate');
+
+            if (hoursInput) hoursInput.addEventListener('input', calculateInvoiceTotal);
+            if (rateInput) rateInput.addEventListener('input', calculateInvoiceTotal);
+            if (vatRateSelect) vatRateSelect.addEventListener('change', calculateInvoiceTotal);
+
+            // File upload
+            setupFileUpload('expense-file-upload', 'expense-file');
+
+            // Modal close on outside click
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+        }
+
+        function loadSampleData() {
+            // Sample invoices
+            appState.invoices = [
+                {
+                    id: '2026-001',
+                    client: 'TechCorp B.V.',
+                    date: '2026-02-15',
+                    amount: 4250.00,
+                    status: 'paid'
+                },
+                {
+                    id: '2026-002',
+                    client: 'InnovatiePartners GmbH',
+                    date: '2026-02-10',
+                    amount: 3800.00,
+                    status: 'pending'
+                },
+                {
+                    id: '2026-003',
+                    client: 'Digital Solutions Ltd',
+                    date: '2026-02-05',
+                    amount: 5200.00,
+                    status: 'overdue'
+                }
+            ];
+
+            // Sample clients
+            appState.clients = [
+                {
+                    id: 'techcorp',
+                    name: 'TechCorp B.V.',
+                    country: 'NL',
+                    vatNumber: 'NL123456789B01',
+                    type: 'nl'
+                },
+                {
+                    id: 'innovatie',
+                    name: 'InnovatiePartners GmbH',
+                    country: 'DE',
+                    vatNumber: 'DE123456789',
+                    type: 'eu-b2b'
+                },
+                {
+                    id: 'digital',
+                    name: 'Digital Solutions Ltd',
+                    country: 'UK',
+                    vatNumber: '',
+                    type: 'non-eu'
+                }
+            ];
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const newTheme = appState.theme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            appState.theme = newTheme;
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            if (icon) {
+                icon.textContent = appState.theme === 'dark' ? '☀️' : '🌙';
+            }
+        }
+
+        // Page Navigation
+        function changePage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.add('hidden');
+            });
+
+            // Show selected page
+            const targetPage = document.getElementById(`page-${pageName}`);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                
+                // Load page content if needed
+                if (!targetPage.hasChildNodes() || targetPage.children.length === 0) {
+                    loadPageContent(pageName, targetPage);
+                }
+            }
+
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-page') === pageName) {
+                    item.classList.add('active');
+                }
+            });
+
+            appState.currentPage = pageName;
+        }
+
+        function loadPageContent(pageName, container) {
+            // Dynamic page content loading
+            const pageTemplates = {
+                facturen: createFacturenPage,
+                bedrijven: createBedrijvenPage,
+                uitgaven: createUitgavenPage,
+                uren: createUrenPage,
+                btw: createBTWPage,
+                ib: createIBPage,
+                jaarrekening: createJaarrekeningPage,
+                bank: createBankPage,
+                documenten: createDocumentenPage
+            };
+
+            const createFunction = pageTemplates[pageName];
+            if (createFunction) {
+                container.innerHTML = createFunction();
+            }
+        }
+
+        // Page Templates
+        function createFacturenPage() {
+            return `
+                <div class="page-header">
+                    <h1 class="page-title">Facturen</h1>
+                    <p class="page-subtitle">Beheer al je facturen en creditnota's</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Alle Facturen (2026)</h2>
+                        <button class="btn btn-primary" onclick="openModal('modal-factuur')">
+                            ➕ Nieuwe Factuur
+                        </button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nr.</th>
+                                    <th>Klant</th>
+                                    <th>Datum</th>
+                                    <th>Vervaldatum</th>
+                                    <th>Bedrag</th>
+                                    <th>BTW</th>
+                                    <th>Status</th>
+                                    <th>Acties</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>2026-001</strong></td>
+                                    <td>TechCorp B.V.</td>
+                                    <td>15 feb 2026</td>
+                                    <td>29 feb 2026</td>
+                                    <td><strong>€4.250,00</strong></td>
+                                    <td>€735,54</td>
+                                    <td><span class="badge badge-success">Betaald</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-icon">👁️</button>
+                                        <button class="btn btn-secondary btn-icon">📧</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>2026-002</strong></td>
+                                    <td>InnovatiePartners GmbH</td>
+                                    <td>10 feb 2026</td>
+                                    <td>24 feb 2026</td>
+                                    <td><strong>€3.800,00</strong></td>
+                                    <td>€0,00 (RC)</td>
+                                    <td><span class="badge badge-warning">Openstaand</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-icon">👁️</button>
+                                        <button class="btn btn-secondary btn-icon">📧</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>2026-003</strong></td>
+                                    <td>Digital Solutions Ltd</td>
+                                    <td>5 feb 2026</td>
+                                    <td>19 feb 2026</td>
+                                    <td><strong>€5.200,00</strong></td>
+                                    <td>€0,00 (Export)</td>
+                                    <td><span class="badge badge-danger">Verlopen</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-icon">👁️</button>
+                                        <button class="btn btn-secondary btn-icon">⚠️</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Totaal Gefactureerd</div>
+                                <div class="stat-value">€87.450</div>
+                            </div>
+                            <div class="stat-icon">💰</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Betaald</div>
+                                <div class="stat-value">€75.050</div>
+                            </div>
+                            <div class="stat-icon">✅</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Openstaand</div>
+                                <div class="stat-value">€12.400</div>
+                            </div>
+                            <div class="stat-icon">⏳</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createBedrijvenPage() {
+            return `
+                <div class="page-header">
+                    <h1 class="page-title">Bedrijven / Klanten</h1>
+                    <p class="page-subtitle">Beheer je klantrelaties en contactgegevens</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Alle Klanten</h2>
+                        <button class="btn btn-primary">➕ Nieuwe Klant</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Bedrijfsnaam</th>
+                                    <th>Land</th>
+                                    <th>BTW-nummer</th>
+                                    <th>Type</th>
+                                    <th>Totaal Gefactureerd</th>
+                                    <th>Acties</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>TechCorp B.V.</strong></td>
+                                    <td>🇳🇱 Nederland</td>
+                                    <td>NL123456789B01</td>
+                                    <td><span class="badge badge-info">NL B2B</span></td>
+                                    <td><strong>€45.600</strong></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-icon">✏️</button>
+                                        <button class="btn btn-secondary btn-icon">👁️</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>InnovatiePartners GmbH</strong></td>
+                                    <td>🇩🇪 Duitsland</td>
+                                    <td>DE123456789</td>
+                                    <td><span class="badge badge-success">EU B2B</span></td>
+                                    <td><strong>€28.400</strong></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-icon">✏️</button>
+                                        <button class="btn btn-secondary btn-icon">👁️</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Digital Solutions Ltd</strong></td>
+                                    <td>🇬🇧 Verenigd Koninkrijk</td>
+                                    <td>—</td>
+                                    <td><span class="badge badge-warning">Niet-EU</span></td>
+                                    <td><strong>€13.450</strong></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-icon">✏️</button>
+                                        <button class="btn btn-secondary btn-icon">👁️</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createUitgavenPage() {
+            return `
+                <div class="page-header">
+                    <h1 class="page-title">Uitgaven & Kosten</h1>
+                    <p class="page-subtitle">Registreer zakelijke kosten en beheer bonnetjes</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Totale Kosten YTD</div>
+                                <div class="stat-value">€24.560</div>
+                            </div>
+                            <div class="stat-icon">💸</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">BTW Voorbelasting</div>
+                                <div class="stat-value">€4.257</div>
+                            </div>
+                            <div class="stat-icon">🧾</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Deze Maand</div>
+                                <div class="stat-value">€2.847</div>
+                            </div>
+                            <div class="stat-icon">📅</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recente Uitgaven</h2>
+                        <button class="btn btn-primary" onclick="openModal('modal-uitgave')">
+                            ➕ Nieuwe Uitgave
+                        </button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Datum</th>
+                                    <th>Categorie</th>
+                                    <th>Omschrijving</th>
+                                    <th>Bedrag</th>
+                                    <th>BTW</th>
+                                    <th>Bonnetje</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>15 feb 2026</td>
+                                    <td>Software</td>
+                                    <td>Adobe Creative Cloud</td>
+                                    <td><strong>€65,99</strong></td>
+                                    <td>€11,44</td>
+                                    <td>📎 <a href="#">Bekijk</a></td>
+                                </tr>
+                                <tr>
+                                    <td>12 feb 2026</td>
+                                    <td>Kantoorkosten</td>
+                                    <td>Bureaustoelen</td>
+                                    <td><strong>€289,00</strong></td>
+                                    <td>€50,12</td>
+                                    <td>📎 <a href="#">Bekijk</a></td>
+                                </tr>
+                                <tr>
+                                    <td>10 feb 2026</td>
+                                    <td>Telefoon</td>
+                                    <td>Vodafone abonnement</td>
+                                    <td><strong>€45,00</strong></td>
+                                    <td>€7,81</td>
+                                    <td>📎 <a href="#">Bekijk</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createUrenPage() {
+            return `
+                <div class="page-header">
+                    <h1 class="page-title">Urenregistratie</h1>
+                    <p class="page-subtitle">Registreer je uren voor het urencriterium en facturatie</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Urencriterium 2026</h2>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                        <div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                Geregistreerd
+                            </div>
+                            <div style="font-size: 2.5rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;">
+                                748 uur
+                            </div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                Vereist
+                            </div>
+                            <div style="font-size: 2.5rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;">
+                                1.225 uur
+                            </div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                Te gaan
+                            </div>
+                            <div style="font-size: 2.5rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--accent);">
+                                477 uur
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 61%;"></div>
+                    </div>
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">
+                        Je bent op schema! Met het huidige tempo haal je het criterium ruim.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Deze Week</h2>
+                        <button class="btn btn-primary">➕ Uren Toevoegen</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Dag</th>
+                                    <th>Project</th>
+                                    <th>Klant</th>
+                                    <th>Uren</th>
+                                    <th>Tarief</th>
+                                    <th>Waarde</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ma 12 feb</td>
+                                    <td>Website ontwikkeling</td>
+                                    <td>TechCorp B.V.</td>
+                                    <td><strong>8,0 uur</strong></td>
+                                    <td>€85/uur</td>
+                                    <td><strong>€680</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Di 13 feb</td>
+                                    <td>API integratie</td>
+                                    <td>InnovatiePartners GmbH</td>
+                                    <td><strong>6,5 uur</strong></td>
+                                    <td>€90/uur</td>
+                                    <td><strong>€585</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Wo 14 feb</td>
+                                    <td>Consultancy</td>
+                                    <td>Digital Solutions Ltd</td>
+                                    <td><strong>4,0 uur</strong></td>
+                                    <td>€95/uur</td>
+                                    <td><strong>€380</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createBTWPage() {
+            return `
+                <div class="page-header">
+                    <h1 class="page-title">BTW-Aangifte</h1>
+                    <p class="page-subtitle">Beheer je BTW-aangiftes conform de Belastingdienst</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">BTW Geheven</div>
+                                <div class="stat-value">€15.187</div>
+                                <div style="color: var(--text-secondary); font-size: 0.875rem;">Q1 2026</div>
+                            </div>
+                            <div class="stat-icon">💰</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">BTW Voorbelasting</div>
+                                <div class="stat-value">€4.257</div>
+                                <div style="color: var(--text-secondary); font-size: 0.875rem;">Q1 2026</div>
+                            </div>
+                            <div class="stat-icon">📉</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Te Betalen</div>
+                                <div class="stat-value">€10.930</div>
+                                <div style="color: var(--danger); font-size: 0.875rem;">Vervaldatum: 31 maart</div>
+                            </div>
+                            <div class="stat-icon">🧾</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">BTW-Aangifte Q1 2026</h2>
+                        <button class="btn btn-primary">📊 Aangifte Indienen</button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <h3 style="margin-bottom: 1rem; font-size: 1.125rem; font-weight: 600;">
+                                Verschuldigde BTW
+                            </h3>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span>1a. Leveringen hoog tarief (21%)</span>
+                                <strong>€12.847</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span>1b. Leveringen laag tarief (9%)</span>
+                                <strong>€840</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span>1e. 0% of niet bij u belast</span>
+                                <strong>€1.500</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span>3b. EU leveringen/diensten</span>
+                                <strong>€0</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 1rem 0; font-weight: 700; font-size: 1.125rem;">
+                                <span>5a. Totaal verschuldigd</span>
+                                <strong>€15.187</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 style="margin-bottom: 1rem; font-size: 1.125rem; font-weight: 600;">
+                                Voorbelasting
+                            </h3>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span>5b. Voorbelasting</span>
+                                <strong>€4.257</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 1rem 0; margin-top: 8rem; font-weight: 700; font-size: 1.25rem; color: var(--primary);">
+                                <span>5e. Totaal te betalen</span>
+                                <strong>€10.930</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">ICP-Opgave (Intracommunautaire Prestaties)</h2>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Klant</th>
+                                    <th>Land</th>
+                                    <th>BTW-nummer</th>
+                                    <th>Omzet (excl. BTW)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>InnovatiePartners GmbH</td>
+                                    <td>🇩🇪 Duitsland</td>
+                                    <td>DE123456789</td>
+                                    <td><strong>€28.400</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createIBPage() {
+            return `
+                <div class="page-header">
+                    <h1 class="page-title">Inkomstenbelasting</h1>
+                    <p class="page-subtitle">Bereken je verwachte IB-aanslag 2026</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">IB-Berekening 2026 (Voorlopig)</h2>
+                    </div>
+                    <div style="max-width: 600px;">
+                        <div style="display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid var(--border);">
+                            <span>Bruto winst uit onderneming</span>
+                            <strong>€62.890</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid var(--border);">
+                            <span style="padding-left: 1rem; color: var(--text-secondary);">
+                                − Zelfstandigenaftrek (€1.200)
+                            </span>
+                            <strong style="color: var(--text-secondary);">−€1.200</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid var(--border);">
+                            <span>Winst na ondernemersaftrek</span>
+                            <strong>€61.690</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid var(--border);">
+                            <span style="padding-left: 1rem; color: var(--text-secondary);">
+                                − MKB-winstvrijstelling (12,7%)
+                            </span>
+                            <strong style="color: var(--text-secondary);">−€7.835</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 2px solid var(--border); font-weight: 600;">
+                            <span>Belastbaar inkomen Box 1</span>
+                            <strong>€53.855</strong>
+                        </div>
+                        
+                        <div style="margin-top: 2rem;">
+                            <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">
+                                Berekening per schijf:
+                            </h3>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Schijf 1 (€0 - €38.883 @ 35,70%)</span>
+                                <strong>€13.881</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Schijf 2 (€38.883 - €53.855 @ 37,56%)</span>
+                                <strong>€5.625</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Subtotaal belasting</span>
+                                <strong>€19.506</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span style="padding-left: 1rem; color: var(--text-secondary);">
+                                    − Algemene heffingskorting
+                                </span>
+                                <strong style="color: var(--text-secondary);">−€2.888</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span style="padding-left: 1rem; color: var(--text-secondary);">
+                                    − Arbeidskorting
+                                </span>
+                                <strong style="color: var(--text-secondary);">−€5.712</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 1.5rem 0; font-size: 1.25rem; font-weight: 700; color: var(--primary);">
+                                <span>Te betalen inkomstenbelasting 2026</span>
+                                <strong>€10.906</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Effectief Belastingtarief</h2>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+                        <div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                Bruto Winst
+                            </div>
+                            <div style="font-size: 2rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;">
+                                €62.890
+                            </div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                Totale Belastingdruk
+                            </div>
+                            <div style="font-size: 2rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;">
+                                €21.836
+                            </div>
+                            <div style="color: var(--text-secondary); font-size: 0.75rem;">
+                                (IB + BTW)
+                            </div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                Effectief Tarief
+                            </div>
+                            <div style="font-size: 2rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--accent);">
+                                34,7%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createJaarrekeningPage() {
+            return `
+                <div class="page-header">
+                    <h1 class="page-title">Jaarrekening & SBR</h1>
+                    <p class="page-subtitle">Genereer je jaarrekening conform SBR-rapportagestandaarden</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Jaarrekening 2026</h2>
+                        <div style="display: flex; gap: 1rem;">
+                            <button class="btn btn-secondary">📄 Preview PDF</button>
+                            <button class="btn btn-primary">📦 Export naar SBR/XBRL</button>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                        Genereer je volledige jaarrekening inclusief Winst- & Verliesrekening, Balans en 
+                        Kasstroomoverzicht conform Dutch GAAP (RJ Richtlijnen) en Nederlandse Taxonomie (NT).
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Winst- & Verliesrekening</h3>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Netto omzet</span>
+                                <strong>€87.450</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Kosten van goederen/diensten</span>
+                                <strong>−€24.560</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 2px solid var(--border); font-weight: 600;">
+                                <span>Bruto winst</span>
+                                <strong>€62.890</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 1rem 0; font-weight: 700; font-size: 1.125rem; color: var(--accent);">
+                                <span>Netto winst</span>
+                                <strong>€62.890</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Balans</h3>
+                        </div>
+                        <div>
+                            <h4 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text-secondary);">
+                                ACTIVA
+                            </h4>
+                            <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Liquide middelen</span>
+                                <strong>€45.280</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Vorderingen</span>
+                                <strong>€12.400</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 2px solid var(--border); font-weight: 600;">
+                                <span>Totaal activa</span>
+                                <strong>€57.680</strong>
+                            </div>
+                            
+                            <h4 style="font-size: 0.875rem; font-weight: 600; margin: 1.5rem 0 0.75rem; color: var(--text-secondary);">
+                                PASSIVA
+                            </h4>
+                            <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Eigen vermogen</span>
+                                <strong>€46.750</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                                <span>Kortlopende schulden</span>
+                                <strong>€10.930</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 2px solid var(--border); font-weight: 600;">
+                                <span>Totaal passiva</span>
+                                <strong>€57.680</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createBankPage() {
+            return `
+                <div class="page-header">
+                    <h1 class="page-title">Bankrekeningen</h1>
+                    <p class="page-subtitle">Importeer en reconcilieer banktransacties</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Bankafschriften Importeren</h2>
+                        <button class="btn btn-primary">📥 Importeer MT940/CAMT.053</button>
+                    </div>
+                    <p style="color: var(--text-secondary);">
+                        Upload je bankafschriften in MT940 of CAMT.053 formaat om automatisch transacties 
+                        te koppelen aan facturen en uitgaven.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recente Transacties</h2>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Datum</th>
+                                    <th>Omschrijving</th>
+                                    <th>Rekening</th>
+                                    <th>Bedrag</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>15 feb 2026</td>
+                                    <td>TechCorp B.V. - Factuur 2026-001</td>
+                                    <td>NL12 ABNA 0123 4567 89</td>
+                                    <td style="color: var(--accent);"><strong>+€4.250,00</strong></td>
+                                    <td><span class="badge badge-success">Gekoppeld</span></td>
+                                </tr>
+                                <tr>
+                                    <td>14 feb 2026</td>
+                                    <td>Adobe Systems - Abonnement</td>
+                                    <td>NL12 ABNA 0123 4567 89</td>
+                                    <td style="color: var(--danger);"><strong>−€65,99</strong></td>
+                                    <td><span class="badge badge-success">Gekoppeld</span></td>
+                                </tr>
+                                <tr>
+                                    <td>12 feb 2026</td>
+                                    <td>Onbekende betaling</td>
+                                    <td>NL12 ABNA 0123 4567 89</td>
+                                    <td style="color: var(--accent);"><strong>+€289,00</strong></td>
+                                    <td><span class="badge badge-warning">Ongekoppeld</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createDocumentenPage() {
+            return `
+                <div class="page-header">
+                    <h1 class="page-title">Documenten & Archief</h1>
+                    <p class="page-subtitle">Beheer al je zakelijke documenten (7 jaar bewaarplicht)</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Document Uploaden</h2>
+                    </div>
+                    <div class="file-upload">
+                        <div class="file-upload-icon">📎</div>
+                        <div class="file-upload-text">Sleep documenten hierheen of klik om te uploaden</div>
+                        <div class="file-upload-hint">PDF, JPG, PNG, XML (max 25MB)</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Alle Documenten</h2>
+                        <div style="display: flex; gap: 1rem;">
+                            <input type="text" class="form-input" placeholder="Zoeken..." style="width: 300px;">
+                            <select class="form-select" style="width: 200px;">
+                                <option>Alle categorieën</option>
+                                <option>Facturen</option>
+                                <option>Bonnetjes</option>
+                                <option>Contracten</option>
+                                <option>Belastingaangiftes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Bestandsnaam</th>
+                                    <th>Categorie</th>
+                                    <th>Datum</th>
+                                    <th>Grootte</th>
+                                    <th>Acties</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>📄 Factuur-2026-001.pdf</td>
+                                    <td><span class="badge badge-info">Factuur</span></td>
+                                    <td>15 feb 2026</td>
+                                    <td>245 KB</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-icon">👁️</button>
+                                        <button class="btn btn-secondary btn-icon">⬇️</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>📄 Adobe-receipt-feb.pdf</td>
+                                    <td><span class="badge badge-warning">Bonnetje</span></td>
+                                    <td>14 feb 2026</td>
+                                    <td>128 KB</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-icon">👁️</button>
+                                        <button class="btn btn-secondary btn-icon">⬇️</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>📄 Modelovereenkomst-TechCorp.pdf</td>
+                                    <td><span class="badge badge-success">Contract</span></td>
+                                    <td>1 jan 2026</td>
+                                    <td>512 KB</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-icon">👁️</button>
+                                        <button class="btn btn-secondary btn-icon">⬇️</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        // Invoice Calculations
+        function calculateInvoiceTotal() {
+            const hours = parseFloat(document.getElementById('invoice-hours').value) || 0;
+            const rate = parseFloat(document.getElementById('invoice-rate').value) || 0;
+            const vatRate = document.getElementById('invoice-vat-rate').value;
+
+            const subtotal = hours * rate;
+            document.getElementById('invoice-subtotal').value = subtotal.toFixed(2);
+
+            let vatAmount = 0;
+            let total = subtotal;
+
+            if (vatRate === '21') {
+                vatAmount = subtotal * 0.21;
+                total = subtotal + vatAmount;
+            } else if (vatRate === '9') {
+                vatAmount = subtotal * 0.09;
+                total = subtotal + vatAmount;
+            } else {
+                // 0% for reverse charge, export, or KOR
+                vatAmount = 0;
+                total = subtotal;
+            }
+
+            document.getElementById('invoice-total').value = `€${total.toFixed(2)}`;
+        }
+
+        // Save Functions
+        function saveInvoice() {
+            const invoice = {
+                number: document.getElementById('invoice-number').value,
+                date: document.getElementById('invoice-date').value,
+                client: document.getElementById('invoice-client').value,
+                description: document.getElementById('invoice-description').value,
+                hours: parseFloat(document.getElementById('invoice-hours').value),
+                rate: parseFloat(document.getElementById('invoice-rate').value),
+                vatRate: document.getElementById('invoice-vat-rate').value,
+                total: document.getElementById('invoice-total').value,
+                status: 'concept'
+            };
+
+            appState.invoices.push(invoice);
+            
+            // Save to localStorage
+            localStorage.setItem('zzp_invoices', JSON.stringify(appState.invoices));
+
+            alert('✅ Factuur succesvol opgeslagen!');
+            closeModal('modal-factuur');
+            
+            // Refresh current page if on invoices page
+            if (appState.currentPage === 'facturen') {
+                changePage('facturen');
+            }
+        }
+
+        function saveExpense() {
+            const expense = {
+                date: document.getElementById('expense-date').value,
+                amount: parseFloat(document.getElementById('expense-amount').value),
+                category: document.getElementById('expense-category').value,
+                description: document.getElementById('expense-description').value,
+                vat: parseFloat(document.getElementById('expense-vat').value) || 0,
+                businessPercent: parseFloat(document.getElementById('expense-business-percent').value) || 100
+            };
+
+            appState.expenses.push(expense);
+            
+            // Save to localStorage
+            localStorage.setItem('zzp_expenses', JSON.stringify(appState.expenses));
+
+            alert('✅ Uitgave succesvol opgeslagen!');
+            closeModal('modal-uitgave');
+            
+            // Refresh current page if on expenses page
+            if (appState.currentPage === 'uitgaven') {
+                changePage('uitgaven');
+            }
+        }
+
+        // File Upload
+        function setupFileUpload(uploadAreaId, inputId) {
+            const uploadArea = document.getElementById(uploadAreaId);
+            const fileInput = document.getElementById(inputId);
+
+            if (!uploadArea || !fileInput) return;
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('drag-over');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload(files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+        }
+
+        function handleFileUpload(file) {
+            console.log('File uploaded:', file.name);
+            
+            // In a real app, you would:
+            // 1. Validate file type and size
+            // 2. Upload to server or store in IndexedDB
+            // 3. Extract text using OCR if needed
+            // 4. Link to invoice/expense
+            
+            alert(`Bestand "${file.name}" succesvol geüpload!`);
+        }
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K: Quick search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                alert('Quick search feature (to be implemented)');
+            }
+            
+            // Escape: Close modal
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+```
