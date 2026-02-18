@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICTIC Infrastructure Analytics Dashboard</title>
+<style>
+  :root {
+    --bg-primary: #0a0f1a;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --accent: #1E9DE0;
+    --accent2: #2ECC71;
+    --accent3: #F39C12;
+    --danger: #E74C3C;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: #1e293b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg-primary); color: var(--text); }
+
+  .dashboard { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+  /* Header */
+  .header { text-align: center; padding: 30px 20px; margin-bottom: 30px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; border: 1px solid var(--border); }
+  .header h1 { font-size: 28px; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header .subtitle { color: var(--text-muted); margin-top: 8px; font-size: 14px; }
+  .header .sec-badge { display: inline-block; margin-top: 12px; padding: 4px 16px; border-radius: 20px; background: rgba(30,157,224,0.15); color: var(--accent); font-size: 13px; font-weight: 600; border: 1px solid rgba(30,157,224,0.3); }
+
+  /* Navigation Tabs */
+  .nav-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; padding: 8px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); justify-content: center; }
+  .nav-tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-muted); background: transparent; border: none; transition: all 0.2s; }
+  .nav-tab:hover { background: rgba(30,157,224,0.1); color: var(--text); }
+  .nav-tab.active { background: var(--accent); color: white; }
+
+  /* KPI Strip */
+  .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .kpi-card { background: var(--bg-card); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border); transition: transform 0.2s, border-color 0.2s; }
+  .kpi-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .kpi-value { font-size: 28px; font-weight: 700; }
+  .kpi-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi-status { display: inline-block; margin-top: 6px; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+  .status-green { background: rgba(46,204,113,0.15); color: #2ECC71; }
+  .status-yellow { background: rgba(243,156,18,0.15); color: #F39C12; }
+  .status-red { background: rgba(231,76,60,0.15); color: #E74C3C; }
+  
+  /* Tab Content */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  
+  /* Cards Grid */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card { background: var(--bg-card); border-radius: 12px; padding: 20px; border: 1px solid var(--border); transition: border-color 0.2s; }
+  .card:hover { border-color: rgba(30,157,224,0.4); }
+  .card-full { grid-column: 1 / -1; }
+  .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .card h3 .icon { font-size: 20px; }
+  
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 12px; color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid rgba(30,41,59,0.5); vertical-align: top; }
+  tr:hover td { background: rgba(30,157,224,0.03); }
+  
+  /* Status Badges */
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-confirmed { background: rgba(46,204,113,0.15); color: #2ECC71; }
+  .badge-unverified { background: rgba(243,156,18,0.15); color: #F39C12; }
+  .badge-missing { background: rgba(231,76,60,0.15); color: #E74C3C; }
+  .badge-active { background: rgba(30,157,224,0.15); color: #1E9DE0; }
+  
+  /* Timeline */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .timeline-item { position: relative; margin-bottom: 18px; }
+  .timeline-item::before { content: ''; position: absolute; left: -24px; top: 6px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--accent); background: var(--bg-card); }
+  .timeline-item .date { font-size: 11px; color: var(--accent); font-weight: 600; }
+  .timeline-item .title { font-size: 14px; font-weight: 500; margin-top: 2px; }
+  .timeline-item .desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  
+  /* Progress Bars */
+  .progress-bar { height: 8px; border-radius: 4px; background: var(--border); overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; margin-top: 10px; }
+  .progress-label .name { color: var(--text); }
+  .progress-label .pct { color: var(--text-muted); }
+  
+  /* Pillar Cards */
+  .pillar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .pillar-card { padding: 16px; border-radius: 10px; border: 1px solid var(--border); text-align: center; background: linear-gradient(135deg, rgba(30,157,224,0.05), rgba(46,204,113,0.05)); }
+  .pillar-card .num { font-size: 36px; font-weight: 700; color: var(--accent); }
+  .pillar-card .name { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  
+  /* Gap Indicator */
+  .gap-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(30,41,59,0.4); }
+  .gap-item:last-child { border-bottom: none; }
+  .gap-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .gap-critical .gap-icon { background: rgba(231,76,60,0.2); color: #E74C3C; }
+  .gap-medium .gap-icon { background: rgba(243,156,18,0.2); color: #F39C12; }
+  .gap-low .gap-icon { background: rgba(46,204,113,0.2); color: #2ECC71; }
+  .gap-text { font-size: 13px; }
+  .gap-level { font-size: 10px; font-weight: 600; text-transform: uppercase; margin-left: auto; flex-shrink: 0; }
+
+  @media (max-width: 768px) {
+    .cards-grid { grid-template-columns: 1fr; }
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .pillar-grid { grid-template-columns: repeat(2, 1fr); }
+    .nav-tabs { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="dashboard">
+  <!-- Header -->
+  <div class="header">
+    <h1>🏛️ ICTIC Infrastructure Analytics Dashboard</h1>
+    <div class="subtitle">ICT Industry Council of the Philippines — Organizational Audit</div>
+    <div class="sec-badge">SEC Registration: CN202009893 | Non-Stock, Non-Profit Corporation</div>
+  </div>
+
+  <!-- KPI Strip -->
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <div class="kpi-value" style="color: var(--accent);">8</div>
+      <div class="kpi-label">Known Officers</div>
+      <div class="kpi-status status-yellow">Incomplete</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" style="color: var(--accent2);">5</div>
+      <div class="kpi-label">Active Platforms</div>
+      <div class="kpi-status status-green">Verified</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" style="color: var(--accent3);">8</div>
+      <div class="kpi-label">Events Documented</div>
+      <div class="kpi-status status-green">2024-2026</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" style="color: var(--danger);">6</div>
+      <div class="kpi-label">Strategic Pillars</div>
+      <div class="kpi-status status-green">Defined</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" style="color: #9B59B6;">2</div>
+      <div class="kpi-label">Membership Tiers</div>
+      <div class="kpi-status status-yellow">Fees Unknown</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" style="color: var(--danger);">7</div>
+      <div class="kpi-label">Critical Gaps</div>
+      <div class="kpi-status status-red">Action Needed</div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" data-tab="overview">📊 Overview</button>
+    <button class="nav-tab" data-tab="governance">👔 Governance</button>
+    <button class="nav-tab" data-tab="operations">🏢 Operations</button>
+    <button class="nav-tab" data-tab="financial">💰 Financial</button>
+    <button class="nav-tab" data-tab="membership">🤝 Membership</button>
+    <button class="nav-tab" data-tab="partnerships">🔗 Partnerships</button>
+    <button class="nav-tab" data-tab="programs">🚀 Programs</button>
+    <button class="nav-tab" data-tab="digital">🌐 Digital</button>
+    <button class="nav-tab" data-tab="compliance">⚖️ Compliance</button>
+    <button class="nav-tab" data-tab="gaps">⚠️ Gap Analysis</button>
+  </div>
+
+  <!-- TAB: Overview -->
+  <div class="tab-content active" id="tab-overview">
+    <div class="cards-grid">
+      <div class="card">
+        <h3><span class="icon">🏛️</span> Corporate Identity</h3>
+        <table>
+          <tr><td style="color:var(--text-muted); width:40%;">Legal Name</td><td>ICT Industry Council of the Philippines, Inc.</td></tr>
+          <tr><td style="color:var(--text-muted);">SEC No.</td><td>CN202009893</td></tr>
+          <tr><td style="color:var(--text-muted);">Entity Type</td><td>Non-Stock, Non-Profit Corporation</td></tr>
+          <tr><td style="color:var(--text-muted);">Industry</td><td>IT Services & Consulting (NGO)</td></tr>
+          <tr><td style="color:var(--text-muted);">Founded</td><td>2012 (LinkedIn) / 2019 (RocketReach) <span class="badge badge-unverified">⚠️ Discrepancy</span></td></tr>
+          <tr><td style="color:var(--text-muted);">HQ</td><td>Metro Manila, Philippines</td></tr>
+          <tr><td style="color:var(--text-muted);">Employees</td><td>11–50 (LinkedIn est.)</td></tr>
+          <tr><td style="color:var(--text-muted);">Tagline</td><td>"We bridge the gap between people and industry with Technology"</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="icon">📊</span> Audit Coverage by Dimension</h3>
+        <div style="margin-top: 8px;">
+          <div class="progress-label"><span class="name">Corporate/Legal</span><span class="pct">40%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:40%; background: var(--accent3);"></div></div>
+          <div class="progress-label"><span class="name">Governance</span><span class="pct">50%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:50%; background: var(--accent);"></div></div>
+          <div class="progress-label"><span class="name">Operations</span><span class="pct">30%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:30%; background: var(--accent3);"></div></div>
+          <div class="progress-label"><span class="name">Financial</span><span class="pct">10%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:10%; background: var(--danger);"></div></div>
+          <div class="progress-label"><span class="name">Membership</span><span class="pct">30%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:30%; background: var(--accent3);"></div></div>
+          <div class="progress-label"><span class="name">Partnerships</span><span class="pct">60%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:60%; background: var(--accent2);"></div></div>
+          <div class="progress-label"><span class="name">Programs</span><span class="pct">50%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:50%; background: var(--accent);"></div></div>
+          <div class="progress-label"><span class="name">Digital</span><span class="pct">70%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:70%; background: var(--accent2);"></div></div>
+          <div class="progress-label"><span class="name">Regulatory</span><span class="pct">20%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:20%; background: var(--danger);"></div></div>
+          <div class="progress-label"><span class="name">Reputation</span><span class="pct">30%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:30%; background: var(--accent3);"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Governance -->
+  <div class="tab-content" id="tab-governance">
+    <div class="cards-grid">
+      <div class="card card-full">
+        <h3><span class="icon">👔</span> Board of Directors & Officers</h3>
+        <table>
+          <thead><tr><th>Position</th><th>Name</th><th>External Affiliations</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Co-Founder & Chairman</td><td><strong>David Balamon</strong></td><td>CEO, Copperstone Lending; FEU; DICT E-Gov (2022-23)</td><td><span class="badge badge-confirmed">Confirmed</span></td></tr>
+            <tr><td>President</td><td><strong>Riki Dacanay</strong></td><td>Board Director, EdFolio / SkoolTek</td><td><span class="badge badge-confirmed">Confirmed</span></td></tr>
+            <tr><td>Vice Chairman</td><td><strong>Christian Maristela</strong></td><td>—</td><td><span class="badge badge-confirmed">Confirmed</span></td></tr>
+            <tr><td>Vice President</td><td><strong>Shera Ann Sabbun-Sanchez</strong>, MBA</td><td>SAS 818 Intl Trading; Golden Pentagon Intl; Amdocs</td><td><span class="badge badge-confirmed">Confirmed</span></td></tr>
+            <tr><td>Founding Board Director</td><td><strong>Anthony Lichauco</strong></td><td>AMCHAM; ECCP; GAEC NCR 58; Malasakit Movement</td><td><span class="badge badge-confirmed">Confirmed</span></td></tr>
+            <tr><td>Legal Adviser</td><td><strong>Atty. Hazel Manaog-Mendoza</strong></td><td>FlutterFlow HackFest Judge</td><td><span class="badge badge-confirmed">Confirmed</span></td></tr>
+            <tr><td>Officer / Events</td><td><strong>Luigi Auriemma</strong></td><td>ICT Events Manila; 20yr cybersecurity</td><td><span class="badge badge-active">Active</span></td></tr>
+            <tr><td>Personnel</td><td><strong>John Calvin Go</strong></td><td>Managing Partner, Shrike Trend</td><td><span class="badge badge-active">Active</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="icon">⚠️</span> Governance Gaps</h3>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">Complete board list not publicly available</div><div class="gap-level" style="color:#E74C3C">HIGH</div></div>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">No advisory board disclosed</div><div class="gap-level" style="color:#E74C3C">HIGH</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">No published organizational chart</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">Term limits & election procedures unknown</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">No documented leadership transition history</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+      </div>
+      <div class="card">
+        <h3><span class="icon">🔑</span> Chairman Background</h3>
+        <div style="font-size:13px; line-height: 1.7;">
+          <strong>David Balamon</strong> — Co-Founder & Chairman since inception. Also serves as CEO of Copperstone Lending Inc. Previously affiliated with DICT's Office of E-Government (2022–2023). FEU alumnus. Recent public appearances include PNP Anti-Cybercrime Group panel (Oct 2025) and healthcare ICT talk (Jan 2026).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Operations -->
+  <div class="tab-content" id="tab-operations">
+    <div class="cards-grid">
+      <div class="card">
+        <h3><span class="icon">🏢</span> Operational Profile</h3>
+        <table>
+          <tr><td style="color:var(--text-muted); width:40%;">HQ Location</td><td>Metro Manila <span class="badge badge-unverified">No Address</span></td></tr>
+          <tr><td style="color:var(--text-muted);">Staff Size</td><td>11-50 (LinkedIn)</td></tr>
+          <tr><td style="color:var(--text-muted);">Phone</td><td><span class="badge badge-missing">Not Disclosed</span></td></tr>
+          <tr><td style="color:var(--text-muted);">Email</td><td><span class="badge badge-missing">Not Disclosed</span></td></tr>
+          <tr><td style="color:var(--text-muted);">Website</td><td>icticph.org</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="icon">📋</span> Operational Committees</h3>
+        <div class="pillar-grid">
+          <div class="pillar-card"><div class="num">📢</div><div class="name">Communications & Marketing</div></div>
+          <div class="pillar-card"><div class="num">💰</div><div class="name">Finance & Administration</div></div>
+          <div class="pillar-card"><div class="num">⚖️</div><div class="name">Legal & Compliance</div></div>
+          <div class="pillar-card"><div class="num">🗺️</div><div class="name">Regional Chapters</div></div>
+          <div class="pillar-card"><div class="num">⚙️</div><div class="name">Working Groups</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Financial -->
+  <div class="tab-content" id="tab-financial">
+    <div class="cards-grid">
+      <div class="card">
+        <h3><span class="icon">💰</span> Revenue Sources (Inferred)</h3>
+        <table>
+          <thead><tr><th>Source</th><th>Evidence</th><th>Verification</th></tr></thead>
+          <tbody>
+            <tr><td>Membership Fees</td><td>2 tiers offered; amounts not published</td><td><span class="badge badge-unverified">Unverified</span></td></tr>
+            <tr><td>Event Revenue</td><td>₱12,500-₱14,500 per attendee for events</td><td><span class="badge badge-confirmed">Confirmed</span></td></tr>
+            <tr><td>Sponsorships</td><td>Company Partners serve as event sponsors</td><td><span class="badge badge-unverified">Inferred</span></td></tr>
+            <tr><td>Paid Consulting</td><td>"FREE and PAID services" mentioned on site</td><td><span class="badge badge-unverified">Inferred</span></td></tr>
+            <tr><td>Government Grants</td><td>None documented</td><td><span class="badge badge-missing">Not Found</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="icon">🔴</span> Financial Transparency — Critical Gaps</h3>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">No published financial statements or audited reports</div><div class="gap-level" style="color:#E74C3C">CRITICAL</div></div>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">Membership fee amounts not disclosed</div><div class="gap-level" style="color:#E74C3C">CRITICAL</div></div>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">Banking relationships unknown</div><div class="gap-level" style="color:#E74C3C">CRITICAL</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">AMLC compliance records not accessible</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">BIR registration status unverified</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Membership -->
+  <div class="tab-content" id="tab-membership">
+    <div class="cards-grid">
+      <div class="card card-full">
+        <h3><span class="icon">🤝</span> Membership Tier Comparison</h3>
+        <table>
+          <thead><tr><th>Benefit</th><th>Academic Organization</th><th>Company Partner</th></tr></thead>
+          <tbody>
+            <tr><td>Free Webinar Access</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Preferred Event Rates</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Self-Paced Courses</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Specialized Training</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Networking Events</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Job/Internship Boards</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Speaker Pool Access</td><td>✅</td><td>✅</td></tr>
+            <tr><td>CSR/Marketing Mileage</td><td>—</td><td>✅</td></tr>
+            <tr><td>Speaking Engagements</td><td>—</td><td>✅</td></tr>
+            <tr><td>Product Promotion</td><td>—</td><td>✅</td></tr>
+            <tr><td>Talent Pool Access</td><td>—</td><td>✅</td></tr>
+            <tr><td>Institution Access</td><td>—</td><td>✅</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="icon">🏢</span> Known Partners</h3>
+        <table>
+          <tr><td>VST ECS Philippines</td><td><span class="badge badge-confirmed">400+ AI Courses</span></td></tr>
+          <tr><td>EdFolio / SkoolTek</td><td><span class="badge badge-active">EdTek Con Partner</span></td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="icon">⚠️</span> Membership Gaps</h3>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">Total membership count unknown</div><div class="gap-level" style="color:#E74C3C">HIGH</div></div>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">Complete member list not available</div><div class="gap-level" style="color:#E74C3C">HIGH</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">Fee structure not published</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">Individual membership unclear</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Partnerships -->
+  <div class="tab-content" id="tab-partnerships">
+    <div class="cards-grid">
+      <div class="card">
+        <h3><span class="icon">🏛️</span> Government Partners</h3>
+        <table>
+          <tr><td><strong>DICT / CICC</strong></td><td>PROTECTA Pilipinas MOU — Usec. Alexander K. Ramos</td><td><span class="badge badge-confirmed">MOU Signed</span></td></tr>
+          <tr><td><strong>PNP Anti-Cybercrime</strong></td><td>Chairman Balamon as panelist (Oct 2025)</td><td><span class="badge badge-active">Active</span></td></tr>
+          <tr><td><strong>DICT E-Gov Office</strong></td><td>Balamon formerly affiliated (2022-23)</td><td><span class="badge badge-unverified">Historical</span></td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="icon">💻</span> Tech & Industry Partners</h3>
+        <table>
+          <tr><td><strong>Google Philippines</strong></td><td>FlutterFlow HackFest venue host</td><td><span class="badge badge-confirmed">Confirmed</span></td></tr>
+          <tr><td><strong>FlutterFlow Dev Group</strong></td><td>Co-organized HackFest 2024</td><td><span class="badge badge-confirmed">Confirmed</span></td></tr>
+          <tr><td><strong>VST ECS Philippines</strong></td><td>400+ courses for ICTIC members</td><td><span class="badge badge-confirmed">Confirmed</span></td></tr>
+          <tr><td><strong>ICT Events Manila</strong></td><td>Luigi Auriemma dual role</td><td><span class="badge badge-active">Active</span></td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="icon">🎓</span> Academic Partners</h3>
+        <table>
+          <tr><td><strong>EdFolio / SkoolTek</strong></td><td>EdTek Con 2025 co-organizer</td></tr>
+          <tr><td><strong>AIM Conference Center</strong></td><td>AI Education Summit venue</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="icon">🌍</span> International Connections</h3>
+        <table>
+          <tr><td>🇸🇬 NUADU (Singapore)</td><td>AI Education Summit speaker</td></tr>
+          <tr><td>🇵🇱 EDUEXPERT (Poland)</td><td>AI Education Summit speaker</td></tr>
+          <tr><td>🇺🇸 EDUSCAPE (USA)</td><td>AI Education Summit speaker</td></tr>
+          <tr><td>🇹🇼 BIG X Reality (Taiwan)</td><td>AI Education Summit speaker</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Programs -->
+  <div class="tab-content" id="tab-programs">
+    <div class="cards-grid">
+      <div class="card card-full">
+        <h3><span class="icon">🎯</span> Six Strategic Pillars</h3>
+        <div class="pillar-grid">
+          <div class="pillar-card"><div class="num">1</div><div class="name">Strategic Direction & Policy Advocacy</div></div>
+          <div class="pillar-card"><div class="num">2</div><div class="name">Workforce Development</div></div>
+          <div class="pillar-card"><div class="num">3</div><div class="name">Emerging Tech R&D & Standards</div></div>
+          <div class="pillar-card"><div class="num">4</div><div class="name">Global ICT Linkages & Partnerships</div></div>
+          <div class="pillar-card"><div class="num">5</div><div class="name">Responsible & Ethical Tech Use</div></div>
+          <div class="pillar-card"><div class="num">6</div><div class="name">Community Engagement</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3><span class="icon">📅</span> Event Timeline (2024-2026)</h3>
+        <div class="timeline">
+          <div class="timeline-item"><div class="date">Nov 22-23, 2024</div><div class="title">FlutterFlow HackFest 2024</div><div class="desc">Google PH Office, Taguig — 13 apps built, Atty. Manaog-Mendoza as judge</div></div>
+          <div class="timeline-item"><div class="date">Feb 11, 2025</div><div class="title">PROTECTA Pilipinas MOU Signing</div><div class="desc">MOU with DICT/CICC — Usec. Alexander K. Ramos</div></div>
+          <div class="timeline-item"><div class="date">Mar 7, 2025</div><div class="title">Looking Ahead: Philippines 2025</div><div class="desc">New World Makati Hotel — ₱12,500/attendee</div></div>
+          <div class="timeline-item"><div class="date">Mar 13, 2025</div><div class="title">International AI Education Summit</div><div class="desc">AIM Conference Center, Makati — International speakers</div></div>
+          <div class="timeline-item"><div class="date">Mar 14, 2025</div><div class="title">PROTECT 2025</div><div class="desc">New World Makati Hotel — ₱14,500/attendee</div></div>
+          <div class="timeline-item"><div class="date">Mar 28, 2025</div><div class="title">EdTek Con 2025</div><div class="desc">Waterfront Hotel, Cebu — EdTek Excellence Awards</div></div>
+          <div class="timeline-item"><div class="date">Oct 8, 2025</div><div class="title">PNP Anti-Cybercrime Panel</div><div class="desc">The Premiere — Chairman Balamon as panelist</div></div>
+          <div class="timeline-item"><div class="date">Jan 27, 2026</div><div class="title">Healthcare ICT Talk</div><div class="desc">Chairman Balamon on ICT in healthcare sector</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3><span class="icon">💜</span> Special Initiatives</h3>
+        <table>
+          <tr><td><strong>Women and ICT Frontier</strong></td><td>Led by VP Shera Ann Sanchez — gender equality & women's empowerment in ICT</td></tr>
+          <tr><td><strong>400+ AI/Data Courses</strong></td><td>Free member access via VST ECS partnership</td></tr>
+          <tr><td><strong>Executive Programs</strong></td><td>Planned executive & technical courses</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Digital -->
+  <div class="tab-content" id="tab-digital">
+    <div class="cards-grid">
+      <div class="card">
+        <h3><span class="icon">🌐</span> Website Technical Profile</h3>
+        <table>
+          <tr><td style="color:var(--text-muted); width:40%;">Domain</td><td>icticph.org</td></tr>
+          <tr><td style="color:var(--text-muted);">Registered</td><td>December 6, 2023</td></tr>
+          <tr><td style="color:var(--text-muted);">Expires</td><td>December 6, 2027</td></tr>
+          <tr><td style="color:var(--text-muted);">Registrar</td><td>Hostinger operations, UAB</td></tr>
+          <tr><td style="color:var(--text-muted);">Nameservers</td><td>ns1/ns2.dns-parking.com</td></tr>
+          <tr><td style="color:var(--text-muted);">Web Server</td><td>LiteSpeed</td></tr>
+          <tr><td style="color:var(--text-muted);">Hosting</td><td>Hostinger (hPanel)</td></tr>
+          <tr><td style="color:var(--text-muted);">SSL</td><td>Active ✅</td></tr>
+          <tr><td style="color:var(--text-muted);">CORS Origin</td><td>impactph.io <span class="badge badge-unverified">🔍 Investigate</span></td></tr>
+          <tr><td style="color:var(--text-muted);">Old Domain</td><td>ictic.pinoylancers.com (closed)</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="icon">📱</span> Social Media Channels</h3>
+        <table>
+          <thead><tr><th>Platform</th><th>Handle</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Facebook Page</td><td>@ICTICPH</td><td><span class="badge badge-confirmed">Active</span></td></tr>
+            <tr><td>Facebook Group</td><td>/groups/ictic</td><td><span class="badge badge-confirmed">Active</span></td></tr>
+            <tr><td>LinkedIn</td><td>/company/icticp</td><td><span class="badge badge-confirmed">Active (~33 followers)</span></td></tr>
+            <tr><td>Instagram</td><td>@ictic_ph</td><td><span class="badge badge-confirmed">Active</span></td></tr>
+            <tr><td>Twitter/X</td><td>—</td><td><span class="badge badge-missing">Not Found</span></td></tr>
+            <tr><td>YouTube</td><td>—</td><td><span class="badge badge-missing">Not Found</span></td></tr>
+            <tr><td>Mobile App</td><td>—</td><td><span class="badge badge-missing">Not Found</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Compliance -->
+  <div class="tab-content" id="tab-compliance">
+    <div class="cards-grid">
+      <div class="card card-full">
+        <h3><span class="icon">⚖️</span> Regulatory Compliance Status</h3>
+        <table>
+          <thead><tr><th>Requirement</th><th>Status</th><th>Evidence</th><th>Risk Level</th></tr></thead>
+          <tbody>
+            <tr><td>SEC Registration</td><td><span class="badge badge-confirmed">Confirmed</span></td><td>CN202009893 — Non-stock, non-profit</td><td style="color:#2ECC71">LOW</td></tr>
+            <tr><td>Annual SEC GIS Filing</td><td><span class="badge badge-unverified">Unverified</span></td><td>Cannot verify from public sources</td><td style="color:#F39C12">MEDIUM</td></tr>
+            <tr><td>BIR Registration</td><td><span class="badge badge-unverified">Referenced</span></td><td>Mentioned in FB group; no certificate found</td><td style="color:#F39C12">MEDIUM</td></tr>
+            <tr><td>PCNC Accreditation</td><td><span class="badge badge-unverified">Referenced</span></td><td>Mentioned in FB group; no certificate found</td><td style="color:#F39C12">MEDIUM</td></tr>
+            <tr><td>DSWD Registration</td><td><span class="badge badge-missing">Not Found</span></td><td>May not be required for industry councils</td><td style="color:#2ECC71">LOW</td></tr>
+            <tr><td>Financial Statements</td><td><span class="badge badge-missing">Not Found</span></td><td>No published reports found anywhere</td><td style="color:#E74C3C">HIGH</td></tr>
+            <tr><td>Data Privacy (NPC)</td><td><span class="badge badge-unverified">Unassessed</span></td><td>Website has privacy policy link</td><td style="color:#F39C12">MEDIUM</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Gap Analysis -->
+  <div class="tab-content" id="tab-gaps">
+    <div class="cards-grid">
+      <div class="card">
+        <h3><span class="icon">🔴</span> Critical Gaps (Immediate Action)</h3>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">No published financial statements or audited reports</div><div class="gap-level" style="color:#E74C3C">CRITICAL</div></div>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">No physical office address disclosed publicly</div><div class="gap-level" style="color:#E74C3C">CRITICAL</div></div>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">BIR and PCNC accreditation certificates unverified</div><div class="gap-level" style="color:#E74C3C">CRITICAL</div></div>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">Founding date discrepancy (2012 vs 2019/2020)</div><div class="gap-level" style="color:#E74C3C">CRITICAL</div></div>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">Articles of Incorporation and By-Laws not accessible</div><div class="gap-level" style="color:#E74C3C">CRITICAL</div></div>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">Annual GIS filing compliance unverifiable</div><div class="gap-level" style="color:#E74C3C">CRITICAL</div></div>
+        <div class="gap-item gap-critical"><div class="gap-icon">!</div><div class="gap-text">Total membership count and member list unknown</div><div class="gap-level" style="color:#E74C3C">CRITICAL</div></div>
+      </div>
+      <div class="card">
+        <h3><span class="icon">🟡</span> Medium Gaps (Should Address)</h3>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">No published organizational chart</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">Membership fee amounts not disclosed</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">No Twitter/X or YouTube presence</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">Very low LinkedIn following (~33)</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">No contact phone/email publicly available</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">Regional chapter locations not specified</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+        <div class="gap-item gap-medium"><div class="gap-icon">!</div><div class="gap-text">impactph.io connection unexplained</div><div class="gap-level" style="color:#F39C12">MED</div></div>
+      </div>
+      <div class="card card-full">
+        <h3><span class="icon">🔍</span> Key Inconsistencies</h3>
+        <table>
+          <thead><tr><th>#</th><th>Inconsistency</th><th>Details</th><th>Severity</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Founding Date</td><td>LinkedIn: 2012 | RocketReach/Balamon profile: 2019 | Domain registered: Dec 2023</td><td style="color:#E74C3C">HIGH</td></tr>
+            <tr><td>2</td><td>Employee Count</td><td>LinkedIn "11–50" likely includes all board/volunteers, not salaried staff</td><td style="color:#F39C12">MED</td></tr>
+            <tr><td>3</td><td>impactph.io Link</td><td>HTTP headers show CORS/frame allowance for impactph.io — undisclosed relationship</td><td style="color:#F39C12">MED</td></tr>
+            <tr><td>4</td><td>Legal Entity Name</td><td>Old site: "Information Communications Technologies Industry Council of the Phils., Inc." vs current shorter name</td><td style="color:#F39C12">MED</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tabs = document.querySelectorAll('.nav-tab');
+  const contents = document.querySelectorAll('.tab-content');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+});
+</script>
+</body>
+</html>
