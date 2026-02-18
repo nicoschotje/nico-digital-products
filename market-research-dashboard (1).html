@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroSaaS Philippines - Market Research Report</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-primary: #0a1628;
+            --bg-secondary: #1a2744;
+            --bg-card: rgba(26, 39, 68, 0.6);
+            --accent-blue: #3b82f6;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #ef4444;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: rgba(59, 130, 246, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #0f1e3a 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 22, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-emerald));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .navbar-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .navbar-nav a:hover {
+            color: var(--accent-blue);
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 6rem 2rem 2rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0 6rem;
+            position: relative;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #10b981, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-tagline {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        
+        .hero-highlights {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+        
+        .hero-highlight {
+            text-align: center;
+        }
+        
+        .hero-highlight-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            display: block;
+        }
+        
+        .hero-highlight-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Section */
+        .section {
+            margin-bottom: 6rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .section-header {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .section-title i {
+            color: var(--accent-blue);
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+        
+        /* Glass Card */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .kpi-card {
+            background: linear-gradient(135deg, var(--bg-card), rgba(26, 39, 68, 0.4));
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-emerald));
+        }
+        
+        .kpi-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .kpi-label {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+        
+        /* Funnel */
+        .funnel-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .funnel-stage {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .funnel-stage:hover {
+            border-color: var(--accent-blue);
+            transform: translateX(10px);
+        }
+        
+        .funnel-stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .funnel-stage-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .funnel-stage-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+        
+        .funnel-stage-bar {
+            height: 8px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        
+        .funnel-stage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-emerald));
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+        
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .product-card:hover::before {
+            opacity: 1;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+        }
+        
+        .product-rank {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-emerald));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .product-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-blue);
+        }
+        
+        .product-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        
+        .product-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .product-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .product-stat-label {
+            color: var(--text-secondary);
+        }
+        
+        .product-stat-value {
+            font-weight: 600;
+            color: var(--accent-emerald);
+        }
+        
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .data-table th {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-blue);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        
+        .data-table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .data-table td {
+            color: var(--text-secondary);
+        }
+        
+        /* Regional Cards */
+        .regional-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .regional-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .regional-tier {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .tier-1 {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-emerald);
+            border: 1px solid var(--accent-emerald);
+        }
+        
+        .tier-2 {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+        }
+        
+        .regional-name {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .regional-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .regional-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .regional-stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .regional-stat-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+        
+        .penetration-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .penetration-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-emerald), var(--accent-blue));
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-blue), var(--accent-emerald), var(--accent-amber));
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+        
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 0 2rem;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            text-align: right;
+        }
+        
+        .timeline-marker {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-emerald));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 0 0 8px var(--bg-primary);
+        }
+        
+        .timeline-phase {
+            font-size: 0.85rem;
+            color: var(--accent-amber);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .timeline-description {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        
+        /* Risk Cards */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+        
+        .risk-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .risk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .risk-title {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+        
+        .risk-probability {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .risk-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent-rose);
+            border: 1px solid var(--accent-rose);
+        }
+        
+        .risk-medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-amber);
+            border: 1px solid var(--accent-amber);
+        }
+        
+        .risk-description {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .risk-mitigation {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid var(--accent-emerald);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .risk-mitigation-label {
+            font-size: 0.85rem;
+            color: var(--accent-emerald);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .risk-mitigation-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        /* Investment Ask */
+        .investment-ask {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+            border: 2px solid var(--accent-blue);
+            border-radius: 24px;
+            padding: 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .investment-ask::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .investment-ask-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .investment-amount {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-emerald));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .investment-purpose {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+        
+        .use-of-funds {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .fund-item {
+            text-align: center;
+        }
+        
+        .fund-percentage {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .fund-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-emerald));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 6rem;
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .confidential {
+            color: var(--accent-rose);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-highlights {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .navbar-nav {
+                display: none;
+            }
+            
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                flex-direction: row !important;
+            }
+            
+            .timeline-item:nth-child(odd) .timeline-content {
+                text-align: left;
+            }
+            
+            .timeline-marker {
+                position: absolute;
+                left: 0;
+            }
+            
+            .timeline-content {
+                margin-left: 5rem !important;
+                margin-right: 0 !important;
+            }
+            
+            .regional-grid,
+            .product-grid,
+            .risk-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .navbar {
+                position: static;
+            }
+            
+            .glass-card,
+            .chart-container {
+                border: 1px solid #ddd;
+                background: white;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-chart-line"></i> MicroSaaS Philippines
+        </div>
+        <ul class="navbar-nav">
+            <li><a href="#executive-summary">Summary</a></li>
+            <li><a href="#market">Market</a></li>
+            <li><a href="#financials">Financials</a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#investment">Investment</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>MicroSaaS Philippines</h1>
+            <p class="hero-tagline">Empowering 1.1M Filipino Micro-Enterprises Through Affordable, Purpose-Built SaaS Solutions</p>
+            
+            <div class="hero-highlights">
+                <div class="hero-highlight">
+                    <span class="hero-highlight-value">₱1.16B</span>
+                    <span class="hero-highlight-label">Total Addressable Market</span>
+                </div>
+                <div class="hero-highlight">
+                    <span class="hero-highlight-value">₱371M</span>
+                    <span class="hero-highlight-label">Year 5 ARR Target</span>
+                </div>
+                <div class="hero-highlight">
+                    <span class="hero-highlight-value">99.8:1</span>
+                    <span class="hero-highlight-label">LTV:CAC Ratio (Y5)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Executive Summary -->
+        <section id="executive-summary" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Executive Summary
+                </h2>
+                <p class="section-subtitle">Key Performance Indicators & Market Metrics</p>
+            </div>
+            
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <i class="fas fa-globe kpi-icon" style="color: var(--accent-blue);"></i>
+                    <div class="kpi-value" data-target="1160000">0</div>
+                    <div class="kpi-label">Total Addressable Market</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <i class="fas fa-crosshairs kpi-icon" style="color: var(--accent-emerald);"></i>
+                    <div class="kpi-value" data-target="563529">0</div>
+                    <div class="kpi-label">Serviceable Addressable Market</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <i class="fas fa-bullseye kpi-icon" style="color: var(--accent-amber);"></i>
+                    <div class="kpi-value" data-target="28176">0</div>
+                    <div class="kpi-label">3-Year Obtainable Market</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <i class="fas fa-rocket kpi-icon" style="color: var(--accent-rose);"></i>
+                    <div class="kpi-value">₱371M</div>
+                    <div class="kpi-label">Year 5 ARR Target</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <i class="fas fa-balance-scale kpi-icon" style="color: var(--accent-blue);"></i>
+                    <div class="kpi-value">99.8:1</div>
+                    <div class="kpi-label">LTV:CAC Ratio (Year 5)</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <i class="fas fa-clock kpi-icon" style="color: var(--accent-emerald);"></i>
+                    <div class="kpi-value">8-10</div>
+                    <div class="kpi-label">Months to Break-Even</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Market Opportunity -->
+        <section id="market" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Market Opportunity
+                </h2>
+                <p class="section-subtitle">TAM/SAM/SOM Breakdown</p>
+            </div>
+            
+            <div class="funnel-container">
+                <div class="funnel-stage">
+                    <div class="funnel-stage-header">
+                        <div class="funnel-stage-title">
+                            <i class="fas fa-globe" style="color: var(--accent-blue);"></i>
+                            Total Addressable Market (TAM)
+                        </div>
+                        <div class="funnel-stage-value">1,160,000</div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">All micro-enterprises in the Philippines (90.43% of establishments)</p>
+                    <div class="funnel-stage-bar">
+                        <div class="funnel-stage-fill" style="width: 100%;"></div>
+                    </div>
+                </div>
+                
+                <div class="funnel-stage">
+                    <div class="funnel-stage-header">
+                        <div class="funnel-stage-title">
+                            <i class="fas fa-crosshairs" style="color: var(--accent-emerald);"></i>
+                            Serviceable Addressable Market (SAM)
+                        </div>
+                        <div class="funnel-stage-value">563,529</div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">48.6% of TAM - Digital-ready businesses in Tier 1 & 2 regions</p>
+                    <div class="funnel-stage-bar">
+                        <div class="funnel-stage-fill" style="width: 48.6%;"></div>
+                    </div>
+                </div>
+                
+                <div class="funnel-stage">
+                    <div class="funnel-stage-header">
+                        <div class="funnel-stage-title">
+                            <i class="fas fa-bullseye" style="color: var(--accent-amber);"></i>
+                            Serviceable Obtainable Market (SOM)
+                        </div>
+                        <div class="funnel-stage-value">28,176</div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">5% of SAM - Realistic 3-year capture target</p>
+                    <div class="funnel-stage-bar">
+                        <div class="funnel-stage-fill" style="width: 5%;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sector Analysis -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-industry"></i>
+                    Sector Analysis
+                </h2>
+                <p class="section-subtitle">Top 8 High-Opportunity Sectors</p>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-wrapper">
+                    <canvas id="sectorChart"></canvas>
+                </div>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Sector</th>
+                        <th>Businesses</th>
+                        <th>Opportunity Score</th>
+                        <th>TAM Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Wholesale & Retail Trade</td>
+                        <td>568,045</td>
+                        <td><span style="color: var(--accent-emerald);">★★★★★ 9.2</span></td>
+                        <td>₱18.2B</td>
+                    </tr>
+                    <tr>
+                        <td>Accommodation & Food Service</td>
+                        <td>172,629</td>
+                        <td><span style="color: var(--accent-emerald);">★★★★★ 9.0</span></td>
+                        <td>₱8.6B</td>
+                    </tr>
+                    <tr>
+                        <td>Manufacturing</td>
+                        <td>127,581</td>
+                        <td><span style="color: var(--accent-blue);">★★★★ 8.1</span></td>
+                        <td>₱5.1B</td>
+                    </tr>
+                    <tr>
+                        <td>Other Services</td>
+                        <td>83,994</td>
+                        <td><span style="color: var(--accent-blue);">★★★★ 7.8</span></td>
+                        <td>₱2.7B</td>
+                    </tr>
+                    <tr>
+                        <td>Financial & Insurance</td>
+                        <td>44,643</td>
+                        <td><span style="color: var(--accent-blue);">★★★★ 7.5</span></td>
+                        <td>₱1.5B</td>
+                    </tr>
+                    <tr>
+                        <td>Professional/Scientific/Tech</td>
+                        <td>14,720</td>
+                        <td><span style="color: var(--accent-blue);">★★★★ 7.4</span></td>
+                        <td>₱686M</td>
+                    </tr>
+                    <tr>
+                        <td>Human Health & Social Work</td>
+                        <td>29,364</td>
+                        <td><span style="color: var(--accent-amber);">★★★ 7.2</span></td>
+                        <td>₱978M</td>
+                    </tr>
+                    <tr>
+                        <td>Administrative & Support</td>
+                        <td>13,625</td>
+                        <td><span style="color: var(--accent-amber);">★★★ 7.0</span></td>
+                        <td>₱454M</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Regional Analysis -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-map-marked-alt"></i>
+                    Regional Market Heat Map
+                </h2>
+                <p class="section-subtitle">Top 6 Priority Regions by Digital Readiness</p>
+            </div>
+            
+            <div class="regional-grid">
+                <div class="regional-card">
+                    <div class="regional-tier tier-1">Tier 1</div>
+                    <h3 class="regional-name">NCR (Metro Manila)</h3>
+                    <div class="regional-stats">
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-building"></i> Businesses</span>
+                            <span class="regional-stat-value">188,295</span>
+                        </div>
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-wifi"></i> Internet Penetration</span>
+                            <span class="regional-stat-value">95%</span>
+                        </div>
+                        <div class="penetration-bar">
+                            <div class="penetration-fill" style="width: 95%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="regional-card">
+                    <div class="regional-tier tier-1">Tier 1</div>
+                    <h3 class="regional-name">CALABARZON</h3>
+                    <div class="regional-stats">
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-building"></i> Businesses</span>
+                            <span class="regional-stat-value">173,452</span>
+                        </div>
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-wifi"></i> Internet Penetration</span>
+                            <span class="regional-stat-value">78%</span>
+                        </div>
+                        <div class="penetration-bar">
+                            <div class="penetration-fill" style="width: 78%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="regional-card">
+                    <div class="regional-tier tier-1">Tier 1</div>
+                    <h3 class="regional-name">Central Luzon</h3>
+                    <div class="regional-stats">
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-building"></i> Businesses</span>
+                            <span class="regional-stat-value">143,544</span>
+                        </div>
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-wifi"></i> Internet Penetration</span>
+                            <span class="regional-stat-value">75%</span>
+                        </div>
+                        <div class="penetration-bar">
+                            <div class="penetration-fill" style="width: 75%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="regional-card">
+                    <div class="regional-tier tier-2">Tier 2</div>
+                    <h3 class="regional-name">Central Visayas</h3>
+                    <div class="regional-stats">
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-building"></i> Businesses</span>
+                            <span class="regional-stat-value">78,443</span>
+                        </div>
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-wifi"></i> Internet Penetration</span>
+                            <span class="regional-stat-value">82%</span>
+                        </div>
+                        <div class="penetration-bar">
+                            <div class="penetration-fill" style="width: 82%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="regional-card">
+                    <div class="regional-tier tier-2">Tier 2</div>
+                    <h3 class="regional-name">Western Visayas</h3>
+                    <div class="regional-stats">
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-building"></i> Businesses</span>
+                            <span class="regional-stat-value">78,391</span>
+                        </div>
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-wifi"></i> Internet Penetration</span>
+                            <span class="regional-stat-value">76%</span>
+                        </div>
+                        <div class="penetration-bar">
+                            <div class="penetration-fill" style="width: 76%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="regional-card">
+                    <div class="regional-tier tier-2">Tier 2</div>
+                    <h3 class="regional-name">Davao Region</h3>
+                    <div class="regional-stats">
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-building"></i> Businesses</span>
+                            <span class="regional-stat-value">62,008</span>
+                        </div>
+                        <div class="regional-stat">
+                            <span class="regional-stat-label"><i class="fas fa-wifi"></i> Internet Penetration</span>
+                            <span class="regional-stat-value">80%</span>
+                        </div>
+                        <div class="penetration-bar">
+                            <div class="penetration-fill" style="width: 80%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Revenue Projections -->
+        <section id="financials" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i>
+                    Revenue Projections
+                </h2>
+                <p class="section-subtitle">5-Year Growth Trajectory</p>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-wrapper">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="glass-card" style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;">Financial Scenario Analysis</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Year 1 ARR</th>
+                            <th>Year 3 ARR</th>
+                            <th>Year 5 ARR</th>
+                            <th>Growth Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Conservative</strong></td>
+                            <td>₱2.75M</td>
+                            <td>₱67.3M</td>
+                            <td>₱371M</td>
+                            <td><span style="color: var(--accent-amber);">135x</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Moderate</strong></td>
+                            <td>₱3.5M</td>
+                            <td>₱85M</td>
+                            <td>₱450M</td>
+                            <td><span style="color: var(--accent-blue);">129x</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Aggressive</strong></td>
+                            <td>₱4.2M</td>
+                            <td>₱102M</td>
+                            <td>₱540M</td>
+                            <td><span style="color: var(--accent-emerald);">129x</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Product Portfolio -->
+        <section id="products" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-cube"></i>
+                    Product Portfolio
+                </h2>
+                <p class="section-subtitle">Top 10 Purpose-Built SPA Solutions</p>
+            </div>
+            
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-rank">1</div>
+                    <h3 class="product-title">TindaPOS</h3>
+                    <p class="product-description">Sari-sari Store Point of Sale System</p>
+                    <div class="product-stats">
+                        <div class="product-stat">
+                            <span class="product-stat-label">Target Market</span>
+                            <span class="product-stat-value">350,000</span>
+                        </div>
+                        <div class="product-stat">
+                            <span class="product-stat-label">Annual Revenue Potential</span>
+                            <span class="product-stat-value">₱12.6M</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-rank">2</div>
+                    <h3 class="product-title">MenuKo</h3>
+                    <p class="product-description">Restaurant Order Management System</p>
+                    <div class="product-stats">
+                        <div class="product-stat">
+                            <span class="product-stat-label">Target Market</span>
+                            <span class="product-stat-value">130,000</span>
+                        </div>
+                        <div class="product-stat">
+                            <span class="product-stat-label">Annual Revenue Potential</span>
+                            <span class="product-stat-value">₱7.0M</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-rank">3</div>
+                    <h3 class="product-title">GawaTrack</h3>
+                    <p class="product-description">Manufacturing Production Scheduler</p>
+                    <div class="product-stats">
+                        <div class="product-stat">
+                            <span class="product-stat-label">Target Market</span>
+                            <span class="product-stat-value">90,000</span>
+                        </div>
+                        <div class="product-stat">
+                            <span class="product-stat-label">Annual Revenue Potential</span>
+                            <span class="product-stat-value">₱4.3M</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-rank">4</div>
+                    <h3 class="product-title">BookNow</h3>
+                    <p class="product-description">Appointment Booking System</p>
+                    <div class="product-stats">
+                        <div class="product-stat">
+                            <span class="product-stat-label">Target Market</span>
+                            <span class="product-stat-value">84,000</span>
+                        </div>
+                        <div class="product-stat">
+                            <span class="product-stat-label">Annual Revenue Potential</span>
+                            <span class="product-stat-value">₱3.0M</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-rank">5</div>
+                    <h3 class="product-title">InvTrack</h3>
+                    <p class="product-description">Inventory Management System</p>
+                    <div class="product-stats">
+                        <div class="product-stat">
+                            <span class="product-stat-label">Target Market</span>
+                            <span class="product-stat-value">100,000</span>
+                        </div>
+                        <div class="product-stat">
+                            <span class="product-stat-label">Annual Revenue Potential</span>
+                            <span class="product-stat-value">₱4.8M</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-rank">6</div>
+                    <h3 class="product-title">KonsultaCRM</h3>
+                    <p class="product-description">Professional Services CRM</p>
+                    <div class="product-stats">
+                        <div class="product-stat">
+                            <span class="product-stat-label">Target Market</span>
+                            <span class="product-stat-value">15,000</span>
+                        </div>
+                        <div class="product-stat">
+                            <span class="product-stat-label">Annual Revenue Potential</span>
+                            <span class="product-stat-value">₱1.1M</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-rank">7</div>
+                    <h3 class="product-title">PasabuyPro</h3>
+                    <p class="product-description">Delivery & Logistics Tracker</p>
+                    <div class="product-stats">
+                        <div class="product-stat">
+                            <span class="product-stat-label">Target Market</span>
+                            <span class="product-stat-value">120,000</span>
+                        </div>
+                        <div class="product-stat">
+                            <span class="product-stat-label">Annual Revenue Potential</span>
+                            <span class="product-stat-value">₱5.7M</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-rank">8</div>
+                    <h3 class="product-title">SalonSched</h3>
+                    <p class="product-description">Beauty Salon Booking System</p>
+                    <div class="product-stats">
+                        <div class="product-stat">
+                            <span class="product-stat-label">Target Market</span>
+                            <span class="product-stat-value">40,000</span>
+                        </div>
+                        <div class="product-stat">
+                            <span class="product-stat-label">Annual Revenue Potential</span>
+                            <span class="product-stat-value">₱1.9M</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-rank">9</div>
+                    <h3 class="product-title">AgriLog</h3>
+                    <p class="product-description">Farm Production Tracker</p>
+                    <div class="product-stats">
+                        <div class="product-stat">
+                            <span class="product-stat-label">Target Market</span>
+                            <span class="product-stat-value">7,000</span>
+                        </div>
+                        <div class="product-stat">
+                            <span class="product-stat-label">Annual Revenue Potential</span>
+                            <span class="product-stat-value">₱165K</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-rank">10</div>
+                    <h3 class="product-title">HealthFile</h3>
+                    <p class="product-description">Clinic Patient Management</p>
+                    <div class="product-stats">
+                        <div class="product-stat">
+                            <span class="product-stat-label">Target Market</span>
+                            <span class="product-stat-value">23,000</span>
+                        </div>
+                        <div class="product-stat">
+                            <span class="product-stat-label">Annual Revenue Potential</span>
+                            <span class="product-stat-value">₱1.2M</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Competitive Landscape -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-chess"></i>
+                    Competitive Landscape
+                </h2>
+                <p class="section-subtitle">Pricing & Feature Comparison</p>
+            </div>
+            
+            <div class="chart-container">
+                <h3 style="margin-bottom: 1.5rem;">Pricing Comparison</h3>
+                <div class="chart-wrapper" style="height: 300px;">
+                    <canvas id="competitorChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="glass-card" style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;">Feature Matrix</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>MicroSaaS PH</th>
+                            <th>EasyPOS</th>
+                            <th>Mosaic</th>
+                            <th>GrowSari</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Pricing</td>
+                            <td><strong>₱199-499/mo</strong></td>
+                            <td>₱999/mo</td>
+                            <td>₱1,500/mo</td>
+                            <td>Free</td>
+                        </tr>
+                        <tr>
+                            <td>Offline Mode</td>
+                            <td><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i></td>
+                            <td><i class="fas fa-times-circle" style="color: var(--accent-rose);"></i></td>
+                            <td><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i></td>
+                            <td><i class="fas fa-times-circle" style="color: var(--accent-rose);"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Tagalog Support</td>
+                            <td><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i></td>
+                            <td><i class="fas fa-times-circle" style="color: var(--accent-rose);"></i></td>
+                            <td><i class="fas fa-times-circle" style="color: var(--accent-rose);"></i></td>
+                            <td><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i></td>
+                        </tr>
+                        <tr>
+                            <td>GCash/Maya Integration</td>
+                            <td><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i></td>
+                            <td><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i></td>
+                            <td><i class="fas fa-times-circle" style="color: var(--accent-rose);"></i></td>
+                            <td><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Industry-Specific</td>
+                            <td><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i></td>
+                            <td><i class="fas fa-times-circle" style="color: var(--accent-rose);"></i></td>
+                            <td><i class="fas fa-times-circle" style="color: var(--accent-rose);"></i></td>
+                            <td><i class="fas fa-times-circle" style="color: var(--accent-rose);"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Video Tutorials</td>
+                            <td><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i></td>
+                            <td><i class="fas fa-times-circle" style="color: var(--accent-rose);"></i></td>
+                            <td><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i></td>
+                            <td><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Go-to-Market Timeline -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-road"></i>
+                    Go-to-Market Timeline
+                </h2>
+                <p class="section-subtitle">3-Phase Rollout Strategy</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-phase">Phase 1</div>
+                        <h3 class="timeline-title">MVP Launch</h3>
+                        <p class="timeline-description">
+                            <strong>Timeline:</strong> Months 1-6<br>
+                            <strong>Focus:</strong> Launch TindaPOS in NCR (Metro Manila)<br>
+                            <strong>Activities:</strong> Beta testing with 100 sari-sari stores, collect feedback, iterate product, establish distribution channels<br>
+                            <strong>Target:</strong> 500-1,000 paying customers
+                        </p>
+                    </div>
+                    <div class="timeline-marker">1</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-phase">Phase 2</div>
+                        <h3 class="timeline-title">Regional Scale</h3>
+                        <p class="timeline-description">
+                            <strong>Timeline:</strong> Months 7-18<br>
+                            <strong>Focus:</strong> Expand to all Tier 1 regions + launch MenuKo and InvTrack<br>
+                            <strong>Activities:</strong> TikTok marketing, GCash partnership, distributor network, multi-product bundle<br>
+                            <strong>Target:</strong> 10,000+ customers across 3 products
+                        </p>
+                    </div>
+                    <div class="timeline-marker">2</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-phase">Phase 3</div>
+                        <h3 class="timeline-title">National Expansion</h3>
+                        <p class="timeline-description">
+                            <strong>Timeline:</strong> Months 19-36<br>
+                            <strong>Focus:</strong> Full product portfolio, Tier 2 regions, enterprise partnerships<br>
+                            <strong>Activities:</strong> Launch all 10 SPAs, franchise model, white-label solutions, API marketplace<br>
+                            <strong>Target:</strong> 25,000+ customers, ₱60M+ ARR
+                        </p>
+                    </div>
+                    <div class="timeline-marker">3</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Risk Matrix -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Risk Assessment & Mitigation
+                </h2>
+                <p class="section-subtitle">Top 5 Risks with Strategic Countermeasures</p>
+            </div>
+            
+            <div class="risk-grid">
+                <div class="risk-card">
+                    <div class="risk-header">
+                        <h3 class="risk-title">
+                            <i class="fas fa-wifi" style="color: var(--accent-rose); margin-right: 0.5rem;"></i>
+                            Internet Connectivity
+                        </h3>
+                        <div class="risk-probability risk-medium">80% Prob</div>
+                    </div>
+                    <p class="risk-description">
+                        Unreliable internet in rural areas and frequent outages could disrupt service usage and customer satisfaction.
+                    </p>
+                    <div class="risk-mitigation">
+                        <div class="risk-mitigation-label">Mitigation Strategy</div>
+                        <div class="risk-mitigation-text">
+                            Offline-first architecture with local data storage and automatic sync when connection is restored. All core features work without internet.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="risk-card">
+                    <div class="risk-header">
+                        <h3 class="risk-title">
+                            <i class="fas fa-graduation-cap" style="color: var(--accent-amber); margin-right: 0.5rem;"></i>
+                            Digital Literacy
+                        </h3>
+                        <div class="risk-probability risk-medium">70% Prob</div>
+                    </div>
+                    <p class="risk-description">
+                        Low digital literacy among micro-enterprise owners may create onboarding friction and slow adoption rates.
+                    </p>
+                    <div class="risk-mitigation">
+                        <div class="risk-mitigation-label">Mitigation Strategy</div>
+                        <div class="risk-mitigation-text">
+                            Comprehensive Tagalog video tutorials, in-person training sessions, dedicated Filipino customer support, and simplified UI with visual guides.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="risk-card">
+                    <div class="risk-header">
+                        <h3 class="risk-title">
+                            <i class="fas fa-credit-card" style="color: var(--accent-rose); margin-right: 0.5rem;"></i>
+                            Payment Collection
+                        </h3>
+                        <div class="risk-probability risk-medium">75% Prob</div>
+                    </div>
+                    <p class="risk-description">
+                        Limited credit card penetration and cash-based economy could complicate recurring payment collection.
+                    </p>
+                    <div class="risk-mitigation">
+                        <div class="risk-mitigation-label">Mitigation Strategy</div>
+                        <div class="risk-mitigation-text">
+                            Integrate with GCash and Maya for mobile wallet payments, offer distributor-based cash collection, and implement flexible payment terms.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="risk-card">
+                    <div class="risk-header">
+                        <h3 class="risk-title">
+                            <i class="fas fa-dollar-sign" style="color: var(--accent-rose); margin-right: 0.5rem;"></i>
+                            Price Sensitivity
+                        </h3>
+                        <div class="risk-probability risk-high">85% Prob</div>
+                    </div>
+                    <p class="risk-description">
+                        Micro-enterprises operate on thin margins and may resist even affordable monthly subscription fees.
+                    </p>
+                    <div class="risk-mitigation">
+                        <div class="risk-mitigation-label">Mitigation Strategy</div>
+                        <div class="risk-mitigation-text">
+                            Freemium model with basic features free forever, demonstrate clear ROI through inventory loss prevention and sales analytics, and offer annual prepay discounts.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="risk-card">
+                    <div class="risk-header">
+                        <h3 class="risk-title">
+                            <i class="fas fa-users" style="color: var(--accent-rose); margin-right: 0.5rem;"></i>
+                            Competition from Free Tools
+                        </h3>
+                        <div class="risk-probability risk-high">90% Prob</div>
+                    </div>
+                    <p class="risk-description">
+                        Existing free tools (Excel, notebooks, GrowSari) and incumbent habits pose significant switching barriers.
+                    </p>
+                    <div class="risk-mitigation">
+                        <div class="risk-mitigation-label">Mitigation Strategy</div>
+                        <div class="risk-mitigation-text">
+                            Integration strategy with GrowSari and other platforms, emphasize time savings and error reduction, and offer migration assistance from spreadsheets.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Investment Ask -->
+        <section id="investment" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-handshake"></i>
+                    Investment Opportunity
+                </h2>
+                <p class="section-subtitle">Partner with us to digitize Filipino micro-enterprises</p>
+            </div>
+            
+            <div class="investment-ask">
+                <div class="investment-ask-content">
+                    <div class="investment-amount">₱15M</div>
+                    <p class="investment-purpose">Seed Round | 15% Equity</p>
+                    
+                    <div class="use-of-funds">
+                        <div class="fund-item">
+                            <div class="fund-percentage">40%</div>
+                            <div class="fund-label">Product Development</div>
+                        </div>
+                        <div class="fund-item">
+                            <div class="fund-percentage">35%</div>
+                            <div class="fund-label">Marketing & Sales</div>
+                        </div>
+                        <div class="fund-item">
+                            <div class="fund-percentage">15%</div>
+                            <div class="fund-label">Operations & Support</div>
+                        </div>
+                        <div class="fund-item">
+                            <div class="fund-percentage">10%</div>
+                            <div class="fund-label">Working Capital</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1rem;">Expected Returns</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; text-align: center;">
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-emerald);">24.7x</div>
+                                <div style="color: var(--text-muted); font-size: 0.9rem;">5-Year ROI</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-blue);">₱371M</div>
+                                <div style="color: var(--text-muted); font-size: 0.9rem;">Year 5 ARR</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-amber);">8-10 mos</div>
+                                <div style="color: var(--text-muted); font-size: 0.9rem;">Break-even</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="mailto:invest@microsaasph.com" class="cta-button">
+                        <i class="fas fa-envelope"></i> Request Full Deck
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-text">
+                <strong>MicroSaaS Philippines</strong> | Market Research Report
+            </p>
+            <p class="footer-text">
+                Generated: February 18, 2026
+            </p>
+            <p class="confidential">
+                <i class="fas fa-lock"></i> CONFIDENTIAL - For Investor Review Only
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Trigger count-up animations for KPI cards
+                    const kpiValues = entry.target.querySelectorAll('.kpi-value[data-target]');
+                    kpiValues.forEach(countUp);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Count-up animation
+        function countUp(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000;
+            const step = target / (duration / 16);
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    element.textContent = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString();
+                }
+            }, 16);
+        }
+
+        // Chart.js default settings
+        Chart.defaults.color = '#cbd5e1';
+        Chart.defaults.borderColor = 'rgba(59, 130, 246, 0.1)';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        // Sector Chart
+        const sectorCtx = document.getElementById('sectorChart').getContext('2d');
+        new Chart(sectorCtx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Wholesale & Retail',
+                    'Accommodation & Food',
+                    'Manufacturing',
+                    'Other Services',
+                    'Financial & Insurance',
+                    'Professional/Tech',
+                    'Health & Social Work',
+                    'Administrative'
+                ],
+                datasets: [{
+                    label: 'Number of Businesses',
+                    data: [568045, 172629, 127581, 83994, 44643, 14720, 29364, 13625],
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 39, 68, 0.95)',
+                        padding: 12,
+                        titleColor: '#3b82f6',
+                        bodyColor: '#f8fafc',
+                        borderColor: 'rgba(59, 130, 246, 0.3)',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(59, 130, 246, 0.1)'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Revenue Projections Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+                datasets: [
+                    {
+                        label: 'ARR (₱M)',
+                        data: [2.75, 15.3, 67.4, 182.2, 371.2],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Customers',
+                        data: [767, 3661, 14069, 33812, 61987],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#cbd5e1',
+                            padding: 20,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 39, 68, 0.95)',
+                        padding: 12,
+                        titleColor: '#3b82f6',
+                        bodyColor: '#f8fafc',
+                        borderColor: 'rgba(59, 130, 246, 0.3)',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'ARR (₱ Millions)',
+                            color: '#3b82f6'
+                        },
+                        grid: {
+                            color: 'rgba(59, 130, 246, 0.1)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Customers',
+                            color: '#10b981'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Competitor Pricing Chart
+        const competitorCtx = document.getElementById('competitorChart').getContext('2d');
+        new Chart(competitorCtx, {
+            type: 'bar',
+            data: {
+                labels: ['MicroSaaS PH', 'EasyPOS', 'Mosaic', 'GrowSari'],
+                datasets: [{
+                    label: 'Monthly Pricing (₱)',
+                    data: [349, 999, 1500, 0],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(239, 68, 68, 0.8)'
+                    ],
+                    borderColor: [
+                        '#10b981',
+                        '#3b82f6',
+                        '#f59e0b',
+                        '#ef4444'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 39, 68, 0.95)',
+                        padding: 12,
+                        titleColor: '#3b82f6',
+                        bodyColor: '#f8fafc',
+                        borderColor: 'rgba(59, 130, 246, 0.3)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                if (context.parsed.y === 0) {
+                                    return 'Free (Limited Features)';
+                                }
+                                return '₱' + context.parsed.y.toLocaleString() + '/month';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(59, 130, 246, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
