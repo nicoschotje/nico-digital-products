@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attorney Analytics Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #0A1628;
+            --gold: #C9A962;
+            --warm-white: #F8F6F0;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(201, 169, 98, 0.2);
+            --text-primary: #F8F6F0;
+            --text-secondary: rgba(248, 246, 240, 0.7);
+            --success: #4CAF50;
+            --warning: #FFA726;
+            --danger: #EF5350;
+            --grid-gap: 24px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--navy) 0%, #1a2642 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        body.light-mode {
+            --navy: #F8F6F0;
+            --warm-white: #0A1628;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(10, 22, 40, 0.1);
+            --text-primary: #0A1628;
+            --text-secondary: rgba(10, 22, 40, 0.7);
+            background: linear-gradient(135deg, #F8F6F0 0%, #E8E4DC 100%);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 28px;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            background: rgba(201, 169, 98, 0.2);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--navy);
+            border-color: var(--gold);
+        }
+
+        .btn-primary:hover {
+            background: #B89952;
+            transform: translateY(-2px);
+        }
+
+        select.btn {
+            padding-right: 35px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23F8F6F0' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            appearance: none;
+        }
+
+        /* Card System */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 8px 32px rgba(201, 169, 98, 0.15);
+        }
+
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--grid-gap);
+            margin-bottom: 32px;
+        }
+
+        .kpi-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gold);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .kpi-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .kpi-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .kpi-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 8px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .kpi-change {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .kpi-change.positive {
+            color: var(--success);
+        }
+
+        .kpi-change.negative {
+            color: var(--danger);
+        }
+
+        .kpi-change.neutral {
+            color: var(--warning);
+        }
+
+        /* Chart Grid */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--grid-gap);
+            margin-bottom: 32px;
+        }
+
+        .chart-full {
+            grid-column: span 12;
+        }
+
+        .chart-half {
+            grid-column: span 6;
+        }
+
+        .chart-third {
+            grid-column: span 4;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            color: var(--text-primary);
+        }
+
+        .chart-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ROI Calculator */
+        .roi-calculator {
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.1) 0%, rgba(201, 169, 98, 0.05) 100%);
+        }
+
+        .roi-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .input-group input {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.1);
+        }
+
+        .roi-results {
+            border-top: 2px solid var(--gold);
+            padding-top: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .roi-metric {
+            text-align: center;
+        }
+
+        .roi-metric-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .roi-metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gold);
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: var(--gold);
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        .data-table th:hover {
+            background: rgba(201, 169, 98, 0.05);
+        }
+
+        .data-table th.sortable::after {
+            content: '⇅';
+            position: absolute;
+            right: 8px;
+            opacity: 0.3;
+        }
+
+        .data-table th.sorted-asc::after {
+            content: '↑';
+            opacity: 1;
+        }
+
+        .data-table th.sorted-desc::after {
+            content: '↓';
+            opacity: 1;
+        }
+
+        .data-table tr:hover {
+            background: rgba(201, 169, 98, 0.05);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-good {
+            background: var(--success);
+        }
+
+        .status-warning {
+            background: var(--warning);
+        }
+
+        .status-poor {
+            background: var(--danger);
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--gold);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            left: 26px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chart-half,
+            .chart-third {
+                grid-column: span 12;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-controls {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.1);
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .comparison-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3h18v18H3z"/>
+                    <path d="M9 9h6v6H9z"/>
+                </svg>
+                <h1>Attorney Analytics</h1>
+            </div>
+            <div class="header-controls">
+                <select id="dateRange" class="btn">
+                    <option value="7">Last 7 days</option>
+                    <option value="30" selected>Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                    <option value="365">Last 12 months</option>
+                </select>
+                <div class="comparison-toggle">
+                    <span>Compare</span>
+                    <div class="toggle-switch" id="compareToggle"></div>
+                </div>
+                <button class="btn" id="exportCSV">Export CSV</button>
+                <button class="btn" id="exportPDF">Export PDF</button>
+                <button class="btn" id="themeToggle">
+                    <span id="themeIcon">☀️</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="card kpi-card">
+                <div class="kpi-label">Total Profile Views</div>
+                <div class="kpi-value" data-target="8542">0</div>
+                <div class="kpi-change positive">
+                    <span>↑ 23.4%</span>
+                    <span style="opacity: 0.6;">vs last period</span>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-label">Avg. Time on Profile</div>
+                <div class="kpi-value" data-target="184">0<span style="font-size: 18px;">s</span></div>
+                <div class="kpi-change positive">
+                    <span>↑ 12.8%</span>
+                    <span style="opacity: 0.6;">vs last period</span>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-label">Form Submissions</div>
+                <div class="kpi-value" data-target="127">0</div>
+                <div class="kpi-change positive">
+                    <span>↑ 18.7%</span>
+                    <span style="opacity: 0.6;">vs last period</span>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-label">Booking Link Clicks</div>
+                <div class="kpi-value" data-target="203">0</div>
+                <div class="kpi-change positive">
+                    <span>↑ 15.2%</span>
+                    <span style="opacity: 0.6;">vs last period</span>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-label">Consultation-to-Retention</div>
+                <div class="kpi-value" data-target="70">0<span style="font-size: 18px;">%</span></div>
+                <div class="kpi-change positive">
+                    <span>↑ 5.2%</span>
+                    <span style="opacity: 0.6;">Industry: 65%</span>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-label">Cost Per Lead</div>
+                <div class="kpi-value" data-target="95">$0</div>
+                <div class="kpi-change positive">
+                    <span>↓ 47.2%</span>
+                    <span style="opacity: 0.6;">Benchmark: $150</span>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-label">Client Acquisition Cost</div>
+                <div class="kpi-value" data-target="136">$0</div>
+                <div class="kpi-change positive">
+                    <span>↓ 38.6%</span>
+                    <span style="opacity: 0.6;">vs last period</span>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-label">Lifetime Client Value</div>
+                <div class="kpi-value" data-target="42500">$0</div>
+                <div class="kpi-change positive">
+                    <span>↑ 8.3%</span>
+                    <span style="opacity: 0.6;">vs last period</span>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-label">Estimated ROI</div>
+                <div class="kpi-value" data-target="14.2">0<span style="font-size: 18px;">x</span></div>
+                <div class="kpi-change positive">
+                    <span>↑ 31.5%</span>
+                    <span style="opacity: 0.6;">vs last period</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="chart-grid">
+            <!-- Visitor Trend -->
+            <div class="card chart-full">
+                <div class="chart-header">
+                    <div>
+                        <h2 class="chart-title">Visitor Trends</h2>
+                        <p class="chart-subtitle">Profile views over time</p>
+                    </div>
+                    <select id="trendPeriod" class="btn">
+                        <option value="daily" selected>Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+                <canvas id="visitorTrendChart" width="1200" height="300"></canvas>
+            </div>
+
+            <!-- Traffic Sources -->
+            <div class="card chart-half">
+                <div class="chart-header">
+                    <div>
+                        <h2 class="chart-title">Traffic Sources</h2>
+                        <p class="chart-subtitle">Where your clients find you</p>
+                    </div>
+                </div>
+                <canvas id="trafficSourceChart" width="500" height="400"></canvas>
+            </div>
+
+            <!-- Section Engagement -->
+            <div class="card chart-half">
+                <div class="chart-header">
+                    <div>
+                        <h2 class="chart-title">Section Engagement</h2>
+                        <p class="chart-subtitle">Most viewed profile sections</p>
+                    </div>
+                </div>
+                <canvas id="sectionEngagementChart" width="500" height="400"></canvas>
+            </div>
+
+            <!-- Conversion Funnel -->
+            <div class="card chart-full">
+                <div class="chart-header">
+                    <div>
+                        <h2 class="chart-title">Conversion Funnel</h2>
+                        <p class="chart-subtitle">Journey from view to retained client</p>
+                    </div>
+                </div>
+                <canvas id="conversionFunnelChart" width="1200" height="350"></canvas>
+            </div>
+
+            <!-- Practice Area Performance -->
+            <div class="card chart-half">
+                <div class="chart-header">
+                    <div>
+                        <h2 class="chart-title">Practice Area Performance</h2>
+                        <p class="chart-subtitle">Conversion rates by practice area</p>
+                    </div>
+                </div>
+                <canvas id="practiceAreaChart" width="500" height="350"></canvas>
+            </div>
+
+            <!-- Revenue Attribution -->
+            <div class="card chart-half">
+                <div class="chart-header">
+                    <div>
+                        <h2 class="chart-title">Revenue Attribution</h2>
+                        <p class="chart-subtitle">Revenue by referral source</p>
+                    </div>
+                </div>
+                <canvas id="revenueAttributionChart" width="500" height="350"></canvas>
+            </div>
+
+            <!-- Cost Per Lead Trend -->
+            <div class="card chart-half">
+                <div class="chart-header">
+                    <div>
+                        <h2 class="chart-title">Cost Per Lead Trend</h2>
+                        <p class="chart-subtitle">CPL vs industry benchmark</p>
+                    </div>
+                </div>
+                <canvas id="cplTrendChart" width="500" height="300"></canvas>
+            </div>
+
+            <!-- Local Search Rankings -->
+            <div class="card chart-half">
+                <div class="chart-header">
+                    <div>
+                        <h2 class="chart-title">Local Search Rankings</h2>
+                        <p class="chart-subtitle">Position tracking for key terms</p>
+                    </div>
+                </div>
+                <canvas id="searchRankingsChart" width="500" height="300"></canvas>
+            </div>
+        </div>
+
+        <!-- ROI Calculator -->
+        <div class="card roi-calculator">
+            <h2 class="chart-title" style="margin-bottom: 24px;">ROI Calculator</h2>
+            <div class="roi-inputs">
+                <div class="input-group">
+                    <label>Platform Investment ($)</label>
+                    <input type="number" id="platformCost" value="1500" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Average Case Value ($)</label>
+                    <input type="number" id="avgCaseValue" value="15000" min="0">
+                </div>
+                <div class="input-group">
+                    <label>New Clients This Quarter</label>
+                    <input type="number" id="newClients" value="28" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Consultation-to-Retention (%)</label>
+                    <input type="number" id="retentionRate" value="70" min="0" max="100">
+                </div>
+                <div class="input-group">
+                    <label>Cost Per Lead ($)</label>
+                    <input type="number" id="costPerLead" value="95" min="0">
+                </div>
+            </div>
+            <div class="roi-results">
+                <div class="roi-metric">
+                    <div class="roi-metric-label">Quarterly ROI</div>
+                    <div class="roi-metric-value" id="quarterlyROI">280x</div>
+                </div>
+                <div class="roi-metric">
+                    <div class="roi-metric-label">Annual Projected Value</div>
+                    <div class="roi-metric-value" id="annualValue">$1.68M</div>
+                </div>
+                <div class="roi-metric">
+                    <div class="roi-metric-label">Client Lifetime Value</div>
+                    <div class="roi-metric-value" id="clientLTV">$42,500</div>
+                </div>
+                <div class="roi-metric">
+                    <div class="roi-metric-label">Break-Even Point</div>
+                    <div class="roi-metric-value" id="breakEven">0.1 clients</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="card" style="margin-top: 32px;">
+            <div class="chart-header">
+                <div>
+                    <h2 class="chart-title">Referral Source Performance</h2>
+                    <p class="chart-subtitle">Detailed breakdown by channel</p>
+                </div>
+                <input type="text" id="tableSearch" class="search-box" placeholder="Search...">
+            </div>
+            <div class="data-table-container">
+                <table class="data-table" id="performanceTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable">Source</th>
+                            <th class="sortable">Views</th>
+                            <th class="sortable">Leads</th>
+                            <th class="sortable">Conversions</th>
+                            <th class="sortable">Conv. Rate</th>
+                            <th class="sortable">Revenue</th>
+                            <th class="sortable">ROI</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock Data
+        const mockData = {
+            visitorTrend: {
+                daily: Array.from({length: 180}, (_, i) => ({
+                    date: new Date(Date.now() - (179 - i) * 24 * 60 * 60 * 1000),
+                    views: Math.floor(30 + Math.random() * 30 + i * 0.5)
+                })),
+                weekly: Array.from({length: 26}, (_, i) => ({
+                    date: new Date(Date.now() - (25 - i) * 7 * 24 * 60 * 60 * 1000),
+                    views: Math.floor(200 + Math.random() * 100 + i * 5)
+                })),
+                monthly: Array.from({length: 6}, (_, i) => ({
+                    date: new Date(Date.now() - (5 - i) * 30 * 24 * 60 * 60 * 1000),
+                    views: Math.floor(800 + Math.random() * 400 + i * 50)
+                }))
+            },
+            trafficSources: [
+                {name: 'Google', value: 3417, percentage: 40, color: '#4285F4'},
+                {name: 'LinkedIn', value: 1708, percentage: 20, color: '#0A66C2'},
+                {name: 'Avvo', value: 1281, percentage: 15, color: '#00A0DF'},
+                {name: 'Direct', value: 1281, percentage: 15, color: '#C9A962'},
+                {name: 'Referral', value: 855, percentage: 10, color: '#34A853'}
+            ],
+            sectionEngagement: [
+                {section: 'Practice Areas', views: 7688, color: '#C9A962'},
+                {section: 'Case Results', views: 6835, color: '#B89952'},
+                {section: 'About', views: 5982, color: '#A88842'},
+                {section: 'Reviews', views: 5129, color: '#987732'},
+                {section: 'Contact', views: 4276, color: '#886622'}
+            ],
+            conversionFunnel: [
+                {stage: 'Views', value: 8542, color: '#C9A962'},
+                {stage: 'Section Scroll', value: 5982, color: '#B89952'},
+                {stage: 'Contact Click', value: 2563, color: '#A88842'},
+                {stage: 'Form Submit', value: 203, color: '#987732'},
+                {stage: 'Consultation', value: 127, color: '#886622'},
+                {stage: 'Retained Client', value: 89, color: '#785512'}
+            ],
+            practiceAreas: [
+                {area: 'Personal Injury', rate: 4.2, color: '#C9A962'},
+                {area: 'Corporate Law', rate: 3.8, color: '#B89952'},
+                {area: 'Family Law', rate: 3.5, color: '#A88842'},
+                {area: 'Criminal Defense', rate: 2.9, color: '#987732'}
+            ],
+            revenueAttribution: [
+                {source: 'Google', revenue: 525000, color: '#4285F4'},
+                {source: 'LinkedIn', revenue: 375000, color: '#0A66C2'},
+                {source: 'Avvo', revenue: 285000, color: '#00A0DF'},
+                {source: 'Direct', revenue: 225000, color: '#C9A962'},
+                {source: 'Referral', revenue: 195000, color: '#34A853'}
+            ],
+            cplTrend: Array.from({length: 6}, (_, i) => ({
+                month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'][i],
+                cpl: 180 - i * 15,
+                benchmark: 150
+            })),
+            searchRankings: [
+                {
+                    keyword: 'personal injury lawyer chicago',
+                    positions: [12, 11, 9, 7, 5, 4]
+                },
+                {
+                    keyword: 'corporate attorney chicago',
+                    positions: [15, 13, 11, 9, 7, 6]
+                },
+                {
+                    keyword: 'family law attorney near me',
+                    positions: [8, 7, 6, 5, 4, 3]
+                },
+                {
+                    keyword: 'criminal defense lawyer',
+                    positions: [18, 16, 14, 12, 10, 8]
+                }
+            ],
+            referralData: [
+                {source: 'Google', views: 3417, leads: 51, conversions: 36, convRate: 1.05, revenue: 525000, roi: 15.4, status: 'good'},
+                {source: 'LinkedIn', views: 1708, leads: 34, conversions: 25, convRate: 1.46, revenue: 375000, roi: 11.0, status: 'good'},
+                {source: 'Avvo', views: 1281, leads: 26, conversions: 19, convRate: 1.48, revenue: 285000, roi: 8.4, status: 'good'},
+                {source: 'Direct', views: 1281, leads: 19, conversions: 15, convRate: 1.17, revenue: 225000, roi: 6.6, status: 'warning'},
+                {source: 'Referral', views: 855, leads: 17, conversions: 13, convRate: 1.52, revenue: 195000, roi: 5.7, status: 'warning'}
+            ]
+        };
+
+        // Utility Functions
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return '$' + (num / 1000000).toFixed(2) + 'M';
+            } else if (num >= 1000) {
+                return '$' + (num / 1000).toFixed(0) + 'K';
+            }
+            return '$' + num.toLocaleString();
+        }
+
+        function animateCounter(element, target) {
+            const duration = 2000;
+            const start = 0;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const value = Math.floor(start + (target - start) * easeOutQuart(progress));
+                
+                if (element.textContent.includes('$')) {
+                    element.innerHTML = '$' + value.toLocaleString() + element.innerHTML.match(/<span.*?<\/span>/)?.[0] || '';
+                } else {
+                    element.innerHTML = value.toLocaleString() + (element.innerHTML.match(/<span.*?<\/span>/)?.[0] || '');
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        function easeOutQuart(x) {
+            return 1 - Math.pow(1 - x, 4);
+        }
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Animate counters
+                    const kpiValue = entry.target.querySelector('.kpi-value[data-target]');
+                    if (kpiValue && !kpiValue.classList.contains('animated')) {
+                        kpiValue.classList.add('animated');
+                        const target = parseInt(kpiValue.dataset.target);
+                        animateCounter(kpiValue, target);
+                    }
+                }
+            });
+        }, {threshold: 0.1});
+
+        document.querySelectorAll('.card').forEach(card => observer.observe(card));
+
+        // Canvas Chart Utilities
+        class ChartRenderer {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.dpr = window.devicePixelRatio || 1;
+                this.setupCanvas();
+            }
+
+            setupCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.width = rect.width * this.dpr;
+                this.canvas.height = rect.height * this.dpr;
+                this.ctx.scale(this.dpr, this.dpr);
+                this.width = rect.width;
+                this.height = rect.height;
+            }
+
+            clear() {
+                this.ctx.clearRect(0, 0, this.width, this.height);
+            }
+
+            drawLineChart(data, options = {}) {
+                this.clear();
+                const padding = options.padding || {top: 20, right: 20, bottom: 40, left: 60};
+                const chartWidth = this.width - padding.left - padding.right;
+                const chartHeight = this.height - padding.top - padding.bottom;
+
+                const values = data.map(d => d.views);
+                const maxValue = Math.max(...values);
+                const minValue = Math.min(...values);
+                const range = maxValue - minValue;
+
+                // Draw grid
+                this.ctx.strokeStyle = 'rgba(201, 169, 98, 0.1)';
+                this.ctx.lineWidth = 1;
+                for (let i = 0; i <= 5; i++) {
+                    const y = padding.top + (chartHeight / 5) * i;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(padding.left, y);
+                    this.ctx.lineTo(padding.left + chartWidth, y);
+                    this.ctx.stroke();
+
+                    // Y-axis labels
+                    const value = maxValue - (range / 5) * i;
+                    this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-secondary');
+                    this.ctx.font = '12px Inter';
+                    this.ctx.textAlign = 'right';
+                    this.ctx.fillText(Math.round(value), padding.left - 10, y + 4);
+                }
+
+                // Draw line
+                this.ctx.strokeStyle = '#C9A962';
+                this.ctx.lineWidth = 3;
+                this.ctx.beginPath();
+
+                data.forEach((point, i) => {
+                    const x = padding.left + (chartWidth / (data.length - 1)) * i;
+                    const y = padding.top + chartHeight - ((point.views - minValue) / range) * chartHeight;
+                    
+                    if (i === 0) {
+                        this.ctx.moveTo(x, y);
+                    } else {
+                        this.ctx.lineTo(x, y);
+                    }
+                });
+
+                this.ctx.stroke();
+
+                // Draw area fill
+                this.ctx.lineTo(padding.left + chartWidth, padding.top + chartHeight);
+                this.ctx.lineTo(padding.left, padding.top + chartHeight);
+                this.ctx.closePath();
+                const gradient = this.ctx.createLinearGradient(0, padding.top, 0, padding.top + chartHeight);
+                gradient.addColorStop(0, 'rgba(201, 169, 98, 0.3)');
+                gradient.addColorStop(1, 'rgba(201, 169, 98, 0)');
+                this.ctx.fillStyle = gradient;
+                this.ctx.fill();
+
+                // Draw points
+                this.ctx.fillStyle = '#C9A962';
+                data.forEach((point, i) => {
+                    if (i % Math.ceil(data.length / 10) === 0 || i === data.length - 1) {
+                        const x = padding.left + (chartWidth / (data.length - 1)) * i;
+                        const y = padding.top + chartHeight - ((point.views - minValue) / range) * chartHeight;
+                        
+                        this.ctx.beginPath();
+                        this.ctx.arc(x, y, 4, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    }
+                });
+
+                // X-axis labels
+                this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-secondary');
+                this.ctx.font = '12px Inter';
+                this.ctx.textAlign = 'center';
+                const labelInterval = Math.ceil(data.length / 6);
+                data.forEach((point, i) => {
+                    if (i % labelInterval === 0 || i === data.length - 1) {
+                        const x = padding.left + (chartWidth / (data.length - 1)) * i;
+                        const label = point.date.toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
+                        this.ctx.fillText(label, x, padding.top + chartHeight + 25);
+                    }
+                });
+            }
+
+            drawDonutChart(data, options = {}) {
+                this.clear();
+                const centerX = this.width / 2;
+                const centerY = this.height / 2;
+                const outerRadius = Math.min(centerX, centerY) - 60;
+                const innerRadius = outerRadius * 0.6;
+
+                let currentAngle = -Math.PI / 2;
+                const total = data.reduce((sum, item) => sum + item.value, 0);
+
+                data.forEach((item, i) => {
+                    const sliceAngle = (item.value / total) * Math.PI * 2;
+                    
+                    // Draw slice
+                    this.ctx.beginPath();
+                    this.ctx.arc(centerX, centerY, outerRadius, currentAngle, currentAngle + sliceAngle);
+                    this.ctx.arc(centerX, centerY, innerRadius, currentAngle + sliceAngle, currentAngle, true);
+                    this.ctx.closePath();
+                    this.ctx.fillStyle = item.color;
+                    this.ctx.fill();
+
+                    // Draw label
+                    const labelAngle = currentAngle + sliceAngle / 2;
+                    const labelRadius = outerRadius + 30;
+                    const labelX = centerX + Math.cos(labelAngle) * labelRadius;
+                    const labelY = centerY + Math.sin(labelAngle) * labelRadius;
+                    
+                    this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-primary');
+                    this.ctx.font = '600 13px Inter';
+                    this.ctx.textAlign = labelX > centerX ? 'left' : 'right';
+                    this.ctx.fillText(item.name, labelX, labelY);
+                    
+                    this.ctx.font = '12px Inter';
+                    this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-secondary');
+                    this.ctx.fillText(item.percentage + '%', labelX, labelY + 16);
+
+                    currentAngle += sliceAngle;
+                });
+
+                // Center text
+                this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-primary');
+                this.ctx.font = '700 24px Playfair Display';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText(total.toLocaleString(), centerX, centerY - 10);
+                this.ctx.font = '12px Inter';
+                this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-secondary');
+                this.ctx.fillText('Total Views', centerX, centerY + 10);
+            }
+
+            drawBarChart(data, options = {}) {
+                this.clear();
+                const padding = options.padding || {top: 20, right: 20, bottom: 40, left: 150};
+                const chartWidth = this.width - padding.left - padding.right;
+                const chartHeight = this.height - padding.top - padding.bottom;
+                const barHeight = chartHeight / data.length - 15;
+
+                const maxValue = Math.max(...data.map(d => d.views || d.rate || d.revenue));
+
+                data.forEach((item, i) => {
+                    const value = item.views || item.rate || item.revenue;
+                    const barWidth = (value / maxValue) * chartWidth;
+                    const y = padding.top + i * (chartHeight / data.length);
+
+                    // Draw bar
+                    const gradient = this.ctx.createLinearGradient(padding.left, 0, padding.left + barWidth, 0);
+                    gradient.addColorStop(0, item.color);
+                    gradient.addColorStop(1, item.color + '80');
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.fillRect(padding.left, y, barWidth, barHeight);
+
+                    // Label
+                    this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-primary');
+                    this.ctx.font = '13px Inter';
+                    this.ctx.textAlign = 'right';
+                    this.ctx.fillText(item.section || item.area || item.source, padding.left - 10, y + barHeight / 2 + 5);
+
+                    // Value
+                    this.ctx.textAlign = 'left';
+                    this.ctx.fillStyle = '#C9A962';
+                    const displayValue = item.revenue ? formatNumber(value) : 
+                                        item.rate ? value.toFixed(1) + '%' : 
+                                        value.toLocaleString();
+                    this.ctx.fillText(displayValue, padding.left + barWidth + 10, y + barHeight / 2 + 5);
+                });
+            }
+
+            drawFunnelChart(data, options = {}) {
+                this.clear();
+                const padding = {top: 40, right: 60, bottom: 40, left: 60};
+                const chartWidth = this.width - padding.left - padding.right;
+                const chartHeight = this.height - padding.top - padding.bottom;
+                const stageHeight = chartHeight / data.length;
+
+                const maxValue = data[0].value;
+
+                data.forEach((stage, i) => {
+                    const width = (stage.value / maxValue) * chartWidth;
+                    const x = padding.left + (chartWidth - width) / 2;
+                    const y = padding.top + i * stageHeight;
+                    const nextWidth = i < data.length - 1 ? (data[i + 1].value / maxValue) * chartWidth : width * 0.8;
+
+                    // Draw trapezoid
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x, y);
+                    this.ctx.lineTo(x + width, y);
+                    if (i < data.length - 1) {
+                        const nextX = padding.left + (chartWidth - nextWidth) / 2;
+                        this.ctx.lineTo(nextX + nextWidth, y + stageHeight);
+                        this.ctx.lineTo(nextX, y + stageHeight);
+                    } else {
+                        this.ctx.lineTo(x + width * 0.9, y + stageHeight);
+                        this.ctx.lineTo(x + width * 0.1, y + stageHeight);
+                    }
+                    this.ctx.closePath();
+
+                    const gradient = this.ctx.createLinearGradient(0, y, 0, y + stageHeight);
+                    gradient.addColorStop(0, stage.color);
+                    gradient.addColorStop(1, stage.color + '80');
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.fill();
+
+                    // Stage label and value
+                    this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-primary');
+                    this.ctx.font = '600 14px Inter';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText(stage.stage, this.width / 2, y + stageHeight / 2 - 8);
+                    
+                    this.ctx.font = '700 18px Playfair Display';
+                    this.ctx.fillStyle = '#C9A962';
+                    this.ctx.fillText(stage.value.toLocaleString(), this.width / 2, y + stageHeight / 2 + 12);
+
+                    // Conversion rate
+                    if (i > 0) {
+                        const convRate = ((stage.value / data[i - 1].value) * 100).toFixed(1);
+                        this.ctx.font = '12px Inter';
+                        this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-secondary');
+                        this.ctx.fillText(convRate + '%', this.width / 2, y - 5);
+                    }
+                });
+            }
+
+            drawHorizontalBarChart(data, options = {}) {
+                this.clear();
+                const padding = options.padding || {top: 20, right: 80, bottom: 40, left: 150};
+                const chartWidth = this.width - padding.left - padding.right;
+                const chartHeight = this.height - padding.top - padding.bottom;
+                const barHeight = (chartHeight / data.length) * 0.7;
+                const spacing = (chartHeight / data.length) * 0.3;
+
+                const maxValue = Math.max(...data.map(d => d.rate));
+
+                data.forEach((item, i) => {
+                    const barWidth = (item.rate / maxValue) * chartWidth;
+                    const y = padding.top + i * (barHeight + spacing);
+
+                    // Bar background
+                    this.ctx.fillStyle = 'rgba(201, 169, 98, 0.1)';
+                    this.ctx.fillRect(padding.left, y, chartWidth, barHeight);
+
+                    // Actual bar
+                    const gradient = this.ctx.createLinearGradient(padding.left, 0, padding.left + barWidth, 0);
+                    gradient.addColorStop(0, item.color);
+                    gradient.addColorStop(1, item.color + 'CC');
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.fillRect(padding.left, y, barWidth, barHeight);
+
+                    // Label
+                    this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-primary');
+                    this.ctx.font = '600 13px Inter';
+                    this.ctx.textAlign = 'right';
+                    this.ctx.fillText(item.area, padding.left - 10, y + barHeight / 2 + 5);
+
+                    // Value
+                    this.ctx.textAlign = 'left';
+                    this.ctx.fillStyle = '#C9A962';
+                    this.ctx.font = '700 14px Inter';
+                    this.ctx.fillText(item.rate.toFixed(1) + '%', padding.left + barWidth + 10, y + barHeight / 2 + 5);
+                });
+            }
+
+            drawMultiLineChart(data, options = {}) {
+                this.clear();
+                const padding = options.padding || {top: 20, right: 20, bottom: 50, left: 60};
+                const chartWidth = this.width - padding.left - padding.right;
+                const chartHeight = this.height - padding.top - padding.bottom;
+
+                // Get all values for scaling
+                const allValues = data.flatMap(d => [d.cpl, d.benchmark]);
+                const maxValue = Math.max(...allValues);
+                const minValue = Math.min(...allValues);
+                const range = maxValue - minValue;
+
+                // Draw grid
+                this.ctx.strokeStyle = 'rgba(201, 169, 98, 0.1)';
+                this.ctx.lineWidth = 1;
+                for (let i = 0; i <= 5; i++) {
+                    const y = padding.top + (chartHeight / 5) * i;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(padding.left, y);
+                    this.ctx.lineTo(padding.left + chartWidth, y);
+                    this.ctx.stroke();
+
+                    const value = maxValue - (range / 5) * i;
+                    this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-secondary');
+                    this.ctx.font = '12px Inter';
+                    this.ctx.textAlign = 'right';
+                    this.ctx.fillText('$' + Math.round(value), padding.left - 10, y + 4);
+                }
+
+                // Draw CPL line
+                this.ctx.strokeStyle = '#C9A962';
+                this.ctx.lineWidth = 3;
+                this.ctx.beginPath();
+                data.forEach((point, i) => {
+                    const x = padding.left + (chartWidth / (data.length - 1)) * i;
+                    const y = padding.top + chartHeight - ((point.cpl - minValue) / range) * chartHeight;
+                    if (i === 0) this.ctx.moveTo(x, y);
+                    else this.ctx.lineTo(x, y);
+                });
+                this.ctx.stroke();
+
+                // Draw benchmark line
+                this.ctx.strokeStyle = 'rgba(201, 169, 98, 0.4)';
+                this.ctx.lineWidth = 2;
+                this.ctx.setLineDash([5, 5]);
+                this.ctx.beginPath();
+                data.forEach((point, i) => {
+                    const x = padding.left + (chartWidth / (data.length - 1)) * i;
+                    const y = padding.top + chartHeight - ((point.benchmark - minValue) / range) * chartHeight;
+                    if (i === 0) this.ctx.moveTo(x, y);
+                    else this.ctx.lineTo(x, y);
+                });
+                this.ctx.stroke();
+                this.ctx.setLineDash([]);
+
+                // Draw points
+                data.forEach((point, i) => {
+                    const x = padding.left + (chartWidth / (data.length - 1)) * i;
+                    const yCpl = padding.top + chartHeight - ((point.cpl - minValue) / range) * chartHeight;
+                    
+                    this.ctx.fillStyle = '#C9A962';
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, yCpl, 5, 0, Math.PI * 2);
+                    this.ctx.fill();
+
+                    // X-axis labels
+                    this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-secondary');
+                    this.ctx.font = '12px Inter';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText(point.month, x, padding.top + chartHeight + 25);
+                });
+
+                // Legend
+                const legendY = this.height - 15;
+                this.ctx.fillStyle = '#C9A962';
+                this.ctx.fillRect(this.width / 2 - 80, legendY - 5, 15, 3);
+                this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-primary');
+                this.ctx.font = '12px Inter';
+                this.ctx.textAlign = 'left';
+                this.ctx.fillText('Your CPL', this.width / 2 - 60, legendY);
+
+                this.ctx.strokeStyle = 'rgba(201, 169, 98, 0.4)';
+                this.ctx.lineWidth = 2;
+                this.ctx.setLineDash([5, 5]);
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.width / 2 + 20, legendY - 3);
+                this.ctx.lineTo(this.width / 2 + 35, legendY - 3);
+                this.ctx.stroke();
+                this.ctx.setLineDash([]);
+                this.ctx.fillText('Benchmark', this.width / 2 + 40, legendY);
+            }
+
+            drawRankingsChart(data, options = {}) {
+                this.clear();
+                const padding = {top: 30, right: 150, bottom: 50, left: 40};
+                const chartWidth = this.width - padding.left - padding.right;
+                const chartHeight = this.height - padding.top - padding.bottom;
+
+                const colors = ['#C9A962', '#B89952', '#A88842', '#987732'];
+
+                // Draw grid (inverted because lower rank is better)
+                this.ctx.strokeStyle = 'rgba(201, 169, 98, 0.1)';
+                this.ctx.lineWidth = 1;
+                for (let i = 0; i <= 4; i++) {
+                    const y = padding.top + (chartHeight / 4) * i;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(padding.left, y);
+                    this.ctx.lineTo(padding.left + chartWidth, y);
+                    this.ctx.stroke();
+
+                    this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-secondary');
+                    this.ctx.font = '12px Inter';
+                    this.ctx.textAlign = 'right';
+                    this.ctx.fillText('#' + (i * 5 + 1), padding.left - 10, y + 4);
+                }
+
+                // Draw lines for each keyword
+                data.forEach((item, idx) => {
+                    this.ctx.strokeStyle = colors[idx];
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+
+                    item.positions.forEach((pos, i) => {
+                        const x = padding.left + (chartWidth / (item.positions.length - 1)) * i;
+                        const y = padding.top + (pos / 20) * chartHeight; // Scale to 1-20
+
+                        if (i === 0) this.ctx.moveTo(x, y);
+                        else this.ctx.lineTo(x, y);
+                    });
+
+                    this.ctx.stroke();
+
+                    // Draw points
+                    item.positions.forEach((pos, i) => {
+                        const x = padding.left + (chartWidth / (item.positions.length - 1)) * i;
+                        const y = padding.top + (pos / 20) * chartHeight;
+
+                        this.ctx.fillStyle = colors[idx];
+                        this.ctx.beginPath();
+                        this.ctx.arc(x, y, 4, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    });
+                });
+
+                // X-axis labels
+                this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-secondary');
+                this.ctx.font = '12px Inter';
+                this.ctx.textAlign = 'center';
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+                months.forEach((month, i) => {
+                    const x = padding.left + (chartWidth / (months.length - 1)) * i;
+                    this.ctx.fillText(month, x, padding.top + chartHeight + 25);
+                });
+
+                // Legend
+                data.forEach((item, idx) => {
+                    const legendY = padding.top + idx * 20;
+                    this.ctx.fillStyle = colors[idx];
+                    this.ctx.fillRect(padding.left + chartWidth + 20, legendY - 5, 15, 3);
+                    
+                    this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-primary');
+                    this.ctx.font = '11px Inter';
+                    this.ctx.textAlign = 'left';
+                    const label = item.keyword.length > 25 ? item.keyword.substring(0, 25) + '...' : item.keyword;
+                    this.ctx.fillText(label, padding.left + chartWidth + 40, legendY);
+                });
+            }
+        }
+
+        // Initialize Charts
+        function initCharts() {
+            // Visitor Trend Chart
+            const visitorTrendCanvas = document.getElementById('visitorTrendChart');
+            const visitorTrendChart = new ChartRenderer(visitorTrendCanvas);
+            visitorTrendChart.drawLineChart(mockData.visitorTrend.daily);
+
+            document.getElementById('trendPeriod').addEventListener('change', (e) => {
+                const period = e.target.value;
+                visitorTrendChart.drawLineChart(mockData.visitorTrend[period]);
+            });
+
+            // Traffic Sources Donut
+            const trafficSourceCanvas = document.getElementById('trafficSourceChart');
+            const trafficSourceChart = new ChartRenderer(trafficSourceCanvas);
+            trafficSourceChart.drawDonutChart(mockData.trafficSources);
+
+            // Section Engagement Bar
+            const sectionEngagementCanvas = document.getElementById('sectionEngagementChart');
+            const sectionEngagementChart = new ChartRenderer(sectionEngagementCanvas);
+            sectionEngagementChart.drawBarChart(mockData.sectionEngagement);
+
+            // Conversion Funnel
+            const conversionFunnelCanvas = document.getElementById('conversionFunnelChart');
+            const conversionFunnelChart = new ChartRenderer(conversionFunnelCanvas);
+            conversionFunnelChart.drawFunnelChart(mockData.conversionFunnel);
+
+            // Practice Area Performance
+            const practiceAreaCanvas = document.getElementById('practiceAreaChart');
+            const practiceAreaChart = new ChartRenderer(practiceAreaCanvas);
+            practiceAreaChart.drawHorizontalBarChart(mockData.practiceAreas);
+
+            // Revenue Attribution
+            const revenueAttributionCanvas = document.getElementById('revenueAttributionChart');
+            const revenueAttributionChart = new ChartRenderer(revenueAttributionCanvas);
+            revenueAttributionChart.drawBarChart(mockData.revenueAttribution);
+
+            // CPL Trend
+            const cplTrendCanvas = document.getElementById('cplTrendChart');
+            const cplTrendChart = new ChartRenderer(cplTrendCanvas);
+            cplTrendChart.drawMultiLineChart(mockData.cplTrend);
+
+            // Search Rankings
+            const searchRankingsCanvas = document.getElementById('searchRankingsChart');
+            const searchRankingsChart = new ChartRenderer(searchRankingsCanvas);
+            searchRankingsChart.drawRankingsChart(mockData.searchRankings);
+
+            // Redraw on window resize
+            window.addEventListener('resize', () => {
+                setTimeout(() => {
+                    visitorTrendChart.drawLineChart(mockData.visitorTrend[document.getElementById('trendPeriod').value]);
+                    trafficSourceChart.drawDonutChart(mockData.trafficSources);
+                    sectionEngagementChart.drawBarChart(mockData.sectionEngagement);
+                    conversionFunnelChart.drawFunnelChart(mockData.conversionFunnel);
+                    practiceAreaChart.drawHorizontalBarChart(mockData.practiceAreas);
+                    revenueAttributionChart.drawBarChart(mockData.revenueAttribution);
+                    cplTrendChart.drawMultiLineChart(mockData.cplTrend);
+                    searchRankingsChart.drawRankingsChart(mockData.searchRankings);
+                }, 100);
+            });
+        }
+
+        // ROI Calculator
+        function updateROI() {
+            const platformCost = parseFloat(document.getElementById('platformCost').value) || 0;
+            const avgCaseValue = parseFloat(document.getElementById('avgCaseValue').value) || 0;
+            const newClients = parseFloat(document.getElementById('newClients').value) || 0;
+            const retentionRate = parseFloat(document.getElementById('retentionRate').value) || 0;
+            const costPerLead = parseFloat(document.getElementById('costPerLead').value) || 0;
+
+            const quarterlyRevenue = avgCaseValue * newClients;
+            const quarterlyROI = platformCost > 0 ? (quarterlyRevenue / platformCost).toFixed(1) : 0;
+            const annualValue = quarterlyRevenue * 4;
+            const clientLTV = avgCaseValue * 2.83; // Average 2.83 cases per client lifetime
+            const breakEven = platformCost > 0 ? (platformCost / avgCaseValue).toFixed(1) : 0;
+
+            document.getElementById('quarterlyROI').textContent = quarterlyROI + 'x';
+            document.getElementById('annualValue').textContent = formatNumber(annualValue);
+            document.getElementById('clientLTV').textContent = formatNumber(clientLTV);
+            document.getElementById('breakEven').textContent = breakEven + ' clients';
+        }
+
+        // Data Table
+        function initTable() {
+            const tbody = document.getElementById('tableBody');
+            let sortColumn = null;
+            let sortDirection = 'asc';
+
+            function renderTable(data = mockData.referralData) {
+                tbody.innerHTML = '';
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    const statusClass = row.status === 'good' ? 'status-good' : 
+                                       row.status === 'warning' ? 'status-warning' : 'status-poor';
+                    
+                    tr.innerHTML = `
+                        <td>${row.source}</td>
+                        <td>${row.views.toLocaleString()}</td>
+                        <td>${row.leads}</td>
+                        <td>${row.conversions}</td>
+                        <td>${row.convRate.toFixed(2)}%</td>
+                        <td>${formatNumber(row.revenue)}</td>
+                        <td>${row.roi.toFixed(1)}x</td>
+                        <td><span class="status-indicator ${statusClass}"></span>${row.status}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Sorting
+            document.querySelectorAll('.data-table th.sortable').forEach((th, index) => {
+                th.addEventListener('click', () => {
+                    const columns = ['source', 'views', 'leads', 'conversions', 'convRate', 'revenue', 'roi'];
+                    const column = columns[index];
+
+                    if (sortColumn === column) {
+                        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        sortColumn = column;
+                        sortDirection = 'asc';
+                    }
+
+                    document.querySelectorAll('.data-table th').forEach(h => {
+                        h.classList.remove('sorted-asc', 'sorted-desc');
+                    });
+                    th.classList.add(sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc');
+
+                    const sorted = [...mockData.referralData].sort((a, b) => {
+                        let aVal = a[column];
+                        let bVal = b[column];
+                        
+                        if (typeof aVal === 'string') {
+                            return sortDirection === 'asc' ? 
+                                aVal.localeCompare(bVal) : 
+                                bVal.localeCompare(aVal);
+                        }
+                        
+                        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+                    });
+
+                    renderTable(sorted);
+                });
+            });
+
+            // Search
+            document.getElementById('tableSearch').addEventListener('input', (e) => {
+                const search = e.target.value.toLowerCase();
+                const filtered = mockData.referralData.filter(row => 
+                    row.source.toLowerCase().includes(search)
+                );
+                renderTable(filtered);
+            });
+
+            renderTable();
+        }
+
+        // Theme Toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const icon = document.getElementById('themeIcon');
+            icon.textContent = document.body.classList.contains('light-mode') ? '🌙' : '☀️';
+            
+            // Redraw all charts after theme change
+            setTimeout(() => initCharts(), 100);
+        });
+
+        // Comparison Toggle
+        document.getElementById('compareToggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+
+        // Export Functions
+        document.getElementById('exportCSV').addEventListener('click', () => {
+            let csv = 'Source,Views,Leads,Conversions,Conversion Rate,Revenue,ROI,Status\n';
+            mockData.referralData.forEach(row => {
+                csv += `${row.source},${row.views},${row.leads},${row.conversions},${row.convRate}%,${row.revenue},${row.roi}x,${row.status}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'attorney-analytics-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+        });
+
+        document.getElementById('exportPDF').addEventListener('click', () => {
+            // Simple PDF generation using print
+            window.print();
+        });
+
+        // ROI Calculator inputs
+        ['platformCost', 'avgCaseValue', 'newClients', 'retentionRate', 'costPerLead'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateROI);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            initTable();
+            updateROI();
+        });
+    </script>
+</body>
+</html>
