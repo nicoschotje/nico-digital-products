@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Complete Manual - Educational Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;width:280px;height:100vh;background:linear-gradient(180deg,#161b22,#0d1117);border-right:1px solid #30363d;padding:20px 0;overflow-y:auto;z-index:100;transition:transform .3s}
+.sidebar-header{padding:0 20px 20px;border-bottom:1px solid #30363d;margin-bottom:15px;display:flex;align-items:center;gap:12px}
+.sidebar-header i{font-size:32px;color:#f0883e}
+.sidebar-header h2{font-size:18px;color:#f0883e;font-weight:700}
+.sidebar-header span{font-size:11px;color:#8b949e;display:block;margin-top:2px}
+.nav-section{padding:0 12px;margin-bottom:8px}
+.nav-section-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#8b949e;padding:8px 12px;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:8px;cursor:pointer;transition:all .2s;color:#8b949e;font-size:13px;font-weight:500;margin-bottom:2px}
+.nav-item:hover{background:rgba(240,136,62,.1);color:#f0883e}
+.nav-item.active{background:rgba(240,136,62,.15);color:#f0883e;border-left:3px solid #f0883e}
+.nav-item i{width:20px;text-align:center;font-size:14px}
+.progress-section{padding:15px 20px;border-top:1px solid #30363d;margin-top:10px}
+.progress-label{font-size:11px;color:#8b949e;margin-bottom:6px;display:flex;justify-content:space-between}
+.progress-bar{height:6px;background:#21262d;border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f0883e,#db6d28);border-radius:3px;transition:width .5s}
+.main-content{margin-left:280px;padding:30px 40px;min-height:100vh}
+.content-section{display:none}
+.content-section.active{display:block;animation:fadeSlide .4s ease}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.section-header{margin-bottom:30px}
+.section-header h1{font-size:32px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#f0883e,#db6d28);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-header p{color:#8b949e;font-size:15px;line-height:1.6}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;margin-bottom:30px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:24px;transition:all .3s;cursor:pointer}
+.card:hover{border-color:#f0883e;transform:translateY(-3px);box-shadow:0 8px 30px rgba(240,136,62,.1)}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.card h3{font-size:17px;font-weight:700;color:#e6edf3;margin-bottom:8px}
+.card p{font-size:13px;color:#8b949e;line-height:1.7}
+.lesson{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:28px;margin-bottom:24px}
+.lesson h2{font-size:22px;font-weight:700;color:#e6edf3;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.lesson h2 i{color:#f0883e}
+.lesson h3{font-size:16px;font-weight:600;color:#58a6ff;margin:20px 0 10px}
+.lesson p,.lesson li{font-size:14px;color:#c9d1d9;line-height:1.8}
+.lesson ul,.lesson ol{padding-left:22px;margin:10px 0}
+.lesson li{margin-bottom:6px}
+.analogy{background:linear-gradient(135deg,rgba(240,136,62,.08),rgba(219,109,40,.05));border:1px solid rgba(240,136,62,.3);border-radius:10px;padding:20px;margin:16px 0}
+.analogy .tag{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#f0883e;font-weight:700;margin-bottom:8px}
+.analogy p{color:#e6edf3}
+.tip{background:rgba(56,139,253,.08);border:1px solid rgba(56,139,253,.3);border-radius:10px;padding:16px 20px;margin:16px 0}
+.tip .tag{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#58a6ff;font-weight:700;margin-bottom:6px}
+.warn{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.3);border-radius:10px;padding:16px 20px;margin:16px 0}
+.warn .tag{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#d29922;font-weight:700;margin-bottom:6px}
+.steps{counter-reset:s}
+.step{position:relative;padding-left:50px;margin-bottom:24px}
+.step::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:0;width:36px;height:36px;background:linear-gradient(135deg,#f0883e,#db6d28);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.step h4{font-size:15px;font-weight:600;color:#e6edf3;margin-bottom:6px}
+.step p{font-size:13px;color:#8b949e;line-height:1.7}
+.quiz{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:24px;margin:20px 0}
+.quiz h3{color:#f0883e;font-size:16px;margin-bottom:14px}
+.quiz-opt{display:block;padding:12px 16px;background:#0d1117;border:2px solid #30363d;border-radius:8px;margin-bottom:8px;cursor:pointer;color:#8b949e;font-size:13px;transition:all .2s}
+.quiz-opt:hover{border-color:#58a6ff;color:#e6edf3}
+.quiz-opt.correct{border-color:#3fb950;background:rgba(63,185,80,.1);color:#3fb950}
+.quiz-opt.wrong{border-color:#f85149;background:rgba(248,81,73,.1);color:#f85149}
+.info-table{width:100%;border-collapse:collapse;margin:16px 0}
+.info-table th{background:#21262d;color:#f0883e;font-size:12px;text-transform:uppercase;letter-spacing:1px;padding:12px 16px;text-align:left}
+.info-table td{padding:12px 16px;border-bottom:1px solid #21262d;font-size:13px;color:#8b949e}
+.info-table tr:hover td{background:rgba(240,136,62,.05)}
+.mobile-header{display:none;position:fixed;top:0;left:0;right:0;height:56px;background:#161b22;border-bottom:1px solid #30363d;z-index:200;padding:0 16px;align-items:center;justify-content:space-between}
+.hamburger{background:none;border:none;color:#e6edf3;font-size:22px;cursor:pointer}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
+.icon-blue{background:rgba(56,139,253,.15);color:#58a6ff}
+.icon-green{background:rgba(63,185,80,.15);color:#3fb950}
+.icon-orange{background:rgba(240,136,62,.15);color:#f0883e}
+.icon-purple{background:rgba(188,140,255,.15);color:#bc8cff}
+.icon-red{background:rgba(248,81,73,.15);color:#f85149}
+.icon-yellow{background:rgba(210,153,34,.15);color:#d29922}
+@media(max-width:768px){.mobile-header{display:flex}.sidebar{transform:translateX(-100%);z-index:150}.sidebar.open{transform:translateX(0)}.overlay.show{display:block}.main-content{margin-left:0;padding:70px 16px 30px}.card-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<!-- Mobile Header -->
+<div class="mobile-header"><button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open');document.querySelector('.overlay').classList.toggle('show')"><i class="fas fa-bars"></i></button><span style="color:#f0883e;font-weight:700">GitHub Manual</span><i class="fab fa-github" style="color:#8b949e;font-size:20px"></i></div>
+<div class="overlay" onclick="this.classList.remove('show');document.querySelector('.sidebar').classList.remove('open')"></div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+<div class="sidebar-header"><i class="fab fa-github"></i><div><h2>GitHub Manual</h2><span>Complete Educational Guide</span></div></div>
+<div class="nav-section"><div class="nav-section-title">Getting Started</div>
+<div class="nav-item active" onclick="showSection('welcome')"><i class="fas fa-home"></i>Welcome Home</div>
+<div class="nav-item" onclick="showSection('what-is-github')"><i class="fas fa-question-circle"></i>What is GitHub?</div>
+<div class="nav-item" onclick="showSection('repositories')"><i class="fas fa-folder-open"></i>Repositories</div>
+</div>
+<div class="nav-section"><div class="nav-section-title">Core Concepts</div>
+<div class="nav-item" onclick="showSection('commits')"><i class="fas fa-save"></i>Commits</div>
+<div class="nav-item" onclick="showSection('branches')"><i class="fas fa-code-branch"></i>Branches</div>
+<div class="nav-item" onclick="showSection('pull-requests')"><i class="fas fa-code-merge"></i>Pull Requests</div>
+<div class="nav-item" onclick="showSection('issues')"><i class="fas fa-exclamation-circle"></i>Issues</div>
+</div>
+<div class="nav-section"><div class="nav-section-title">Features</div>
+<div class="nav-item" onclick="showSection('github-pages')"><i class="fas fa-globe"></i>GitHub Pages</div>
+<div class="nav-item" onclick="showSection('actions')"><i class="fas fa-cogs"></i>GitHub Actions</div>
+<div class="nav-item" onclick="showSection('forks-stars')"><i class="fas fa-star"></i>Forks &amp; Stars</div>
+<div class="nav-item" onclick="showSection('projects')"><i class="fas fa-project-diagram"></i>Projects Board</div>
+</div>
+<div class="nav-section"><div class="nav-section-title">Advanced</div>
+<div class="nav-item" onclick="showSection('settings')"><i class="fas fa-sliders-h"></i>Settings &amp; Security</div>
+<div class="nav-item" onclick="showSection('collaboration')"><i class="fas fa-users"></i>Collaboration</div>
+<div class="nav-item" onclick="showSection('best-practices')"><i class="fas fa-trophy"></i>Best Practices</div>
+<div class="nav-item" onclick="showSection('cheatsheet')"><i class="fas fa-scroll"></i>Cheat Sheet</div>
+</div>
+<div class="progress-section"><div class="progress-label"><span>Your Progress</span><span id="progressPct">0%</span></div><div class="progress-bar"><div class="progress-fill" id="progressBar" style="width:0%"></div></div></div>
+</nav>
+
+<!-- Main Content -->
+<main class="main-content">
+<!-- WELCOME -->
+<div class="content-section active" id="welcome">
+<div class="section-header"><h1>Welcome to the GitHub Complete Manual</h1><p>Learn everything about GitHub explained so simply that even a child can understand. Click any module on the left to start learning!</p></div>
+<div class="card-grid">
+<div class="card" onclick="showSection('what-is-github')"><div class="card-icon icon-blue"><i class="fas fa-question-circle"></i></div><h3>What is GitHub?</h3><p>Imagine a magical notebook that saves every version of your work and lets you share it with the world. That is GitHub!</p></div>
+<div class="card" onclick="showSection('repositories')"><div class="card-icon icon-green"><i class="fas fa-folder-open"></i></div><h3>Repositories</h3><p>Your project lives in a special folder called a repository. Think of it like a backpack that carries all your project files.</p></div>
+<div class="card" onclick="showSection('commits')"><div class="card-icon icon-orange"><i class="fas fa-save"></i></div><h3>Commits</h3><p>Every time you save your work with a message, that is a commit. It is like taking a snapshot photo of your project at that moment.</p></div>
+<div class="card" onclick="showSection('branches')"><div class="card-icon icon-purple"><i class="fas fa-code-branch"></i></div><h3>Branches</h3><p>Branches let you try new ideas safely. It is like making a copy of your drawing so you can experiment without messing up the original.</p></div>
+<div class="card" onclick="showSection('pull-requests')"><div class="card-icon icon-red"><i class="fas fa-code-merge"></i></div><h3>Pull Requests</h3><p>When you want to add your changes to the main project, you ask nicely with a Pull Request. It is like raising your hand in class.</p></div>
+<div class="card" onclick="showSection('github-pages')"><div class="card-icon icon-yellow"><i class="fas fa-globe"></i></div><h3>GitHub Pages</h3><p>Turn your code into a real website that anyone can visit! GitHub Pages hosts your site for free, like magic.</p></div>
+</div>
+</div>
+
+<!-- WHAT IS GITHUB -->
+<div class="content-section" id="what-is-github">
+<div class="section-header"><h1>What is GitHub?</h1><p>Understanding GitHub from zero - no experience needed!</p></div>
+<div class="lesson">
+<h2><i class="fas fa-lightbulb"></i> The Simple Explanation</h2>
+<p>GitHub is a website where people store their code and files, keep track of every change they make, and work together with other people on projects. It is like Google Drive, but supercharged with special powers for tracking changes.</p>
+<div class="analogy"><div class="tag">Kid-Friendly Analogy</div><p>Imagine you are writing a story in a notebook. Every time you change something, you take a photo of that page. Now you have photos of every version of your story. If you mess up, you can go back to any photo! GitHub does exactly this, but for code and files. And the best part? Your friends can also write in their own copies and then you combine the best parts together!</p></div>
+<h3>The Three Big Ideas of GitHub</h3>
+<ul>
+<li><strong>Version Control</strong> - GitHub remembers EVERY change you ever make. You can go back in time to any previous version. It is like having an undo button that goes back forever!</li>
+<li><strong>Collaboration</strong> - Multiple people can work on the same project at the same time without stepping on each other's toes. Everyone gets their own workspace.</li>
+<li><strong>Sharing</strong> - You can show your projects to the world, or keep them private. Open source means anyone can see and learn from your code.</li>
+</ul>
+<h3>GitHub vs Git - What is the Difference?</h3>
+<p><strong>Git</strong> is the tool (the engine) that tracks changes to your files on your computer. <strong>GitHub</strong> is the website (the garage) where you park and share your Git projects online. Think of Git as the car engine, and GitHub as the highway where all the cars drive and meet each other.</p>
+<div class="tip"><div class="tag">Pro Tip</div><p>You do NOT need to know how to code to use GitHub! Many writers, designers, and teachers use GitHub to track documents, share resources, and collaborate on non-code projects.</p></div>
+<h3>Who Uses GitHub?</h3>
+<table class="info-table">
+<tr><th>Who</th><th>What They Use It For</th></tr>
+<tr><td>Software Developers</td><td>Writing and sharing code for apps, websites, and games</td></tr>
+<tr><td>Students</td><td>Learning to code, storing school projects, building portfolios</td></tr>
+<tr><td>Companies</td><td>Building products, managing teams, tracking bugs</td></tr>
+<tr><td>Writers &amp; Designers</td><td>Version controlling documents, collaborating on content</td></tr>
+<tr><td>Teachers</td><td>Sharing learning materials, creating open educational resources</td></tr>
+<tr><td>Scientists</td><td>Sharing research data, reproducible experiments</td></tr>
+</table>
+</div>
+<div class="quiz" id="quiz1">
+<h3><i class="fas fa-brain"></i> Quick Check - Did You Understand?</h3>
+<div class="quiz-opt" onclick="checkAnswer(this,'quiz1',true)">A) GitHub is a website for storing code and tracking every change you make</div>
+<div class="quiz-opt" onclick="checkAnswer(this,'quiz1',false)">B) GitHub is a video game</div>
+<div class="quiz-opt" onclick="checkAnswer(this,'quiz1',false)">C) GitHub is a social media app for posting photos</div>
+</div>
+</div>
+
+<!-- REPOSITORIES -->
+<div class="content-section" id="repositories">
+<div class="section-header"><h1>Repositories (Repos)</h1><p>Your project's home - where all your files live together</p></div>
+<div class="lesson">
+<h2><i class="fas fa-folder-open"></i> What is a Repository?</h2>
+<p>A repository (or "repo" for short) is like a special folder that holds ALL the files for one project. But it is way more powerful than a regular folder because it also remembers every change ever made to those files.</p>
+<div class="analogy"><div class="tag">Kid-Friendly Analogy</div><p>Think of a repository like a magical backpack. You put all your school supplies for ONE subject inside it. The backpack remembers every time you added or removed something, and you can magically go back to how it looked on any day!</p></div>
+<h3>Types of Repositories</h3>
+<table class="info-table">
+<tr><th>Type</th><th>Who Can See It</th><th>Best For</th></tr>
+<tr><td><strong>Public</strong></td><td>Everyone on the internet</td><td>Open source projects, portfolios, learning resources</td></tr>
+<tr><td><strong>Private</strong></td><td>Only you and people you invite</td><td>Personal projects, company code, secret work</td></tr>
+</table>
+<h3>What is Inside a Repository?</h3>
+<ul>
+<li><strong>Files and Folders</strong> - Your actual code, images, documents, anything!</li>
+<li><strong>README.md</strong> - A welcome page that explains your project (like a book cover)</li>
+<li><strong>Commit History</strong> - A timeline of every change ever made</li>
+<li><strong>Branches</strong> - Different versions of your project running side by side</li>
+<li><strong>Issues</strong> - A to-do list or bug tracker for your project</li>
+<li><strong>Settings</strong> - Controls for who can do what in your repo</li>
+</ul>
+<h3>How to Create a Repository</h3>
+<div class="steps">
+<div class="step"><h4>Go to GitHub.com</h4><p>Log in to your GitHub account. Click the green "New" button or the "+" icon in the top right corner.</p></div>
+<div class="step"><h4>Name Your Repository</h4><p>Give it a short, clear name. Use hyphens instead of spaces (like "my-cool-project"). Add a description so people know what it is about.</p></div>
+<div class="step"><h4>Choose Public or Private</h4><p>Public means anyone can see it. Private means only you and invited people. You can change this later!</p></div>
+<div class="step"><h4>Add a README</h4><p>Check the box that says "Add a README file". This creates a welcome page for your project automatically.</p></div>
+<div class="step"><h4>Click Create Repository</h4><p>Hit the green button and your repo is born! You now have a home for your project.</p></div>
+</div>
+<div class="tip"><div class="tag">Pro Tip</div><p>Always add a README file! It is the first thing people see when they visit your repo. Write what your project does, how to use it, and how to contribute.</p></div>
+</div>
+</div>
+
+<!-- COMMITS -->
+<div class="content-section" id="commits">
+<div class="section-header"><h1>Commits</h1><p>Saving your work with a message - like taking snapshots in time</p></div>
+<div class="lesson">
+<h2><i class="fas fa-camera"></i> What is a Commit?</h2>
+<p>A commit is when you save changes to your project AND write a little note about what you changed. It is the most important action in GitHub. Every commit creates a permanent record in your project's history.</p>
+<div class="analogy"><div class="tag">Kid-Friendly Analogy</div><p>Imagine you are building with LEGO blocks. Every time you add or change some blocks, you take a photo and write on the back what you did: "Added a red tower" or "Fixed the broken bridge". Now you have a photo album of your entire building process! A commit is exactly like that photo with a note.</p></div>
+<h3>What Makes a Good Commit?</h3>
+<ul>
+<li><strong>Small and focused</strong> - Change one thing at a time, not everything at once</li>
+<li><strong>Clear message</strong> - Write what you did so future-you understands it</li>
+<li><strong>Meaningful</strong> - Each commit should have a purpose</li>
+</ul>
+<h3>Good vs Bad Commit Messages</h3>
+<table class="info-table">
+<tr><th>Bad Message</th><th>Good Message</th></tr>
+<tr><td>"fixed stuff"</td><td>"Fix login button not responding on mobile"</td></tr>
+<tr><td>"update"</td><td>"Add search feature to navigation bar"</td></tr>
+<tr><td>"asdfgh"</td><td>"Remove unused CSS styles from homepage"</td></tr>
+<tr><td>"changes"</td><td>"Update pricing table with new monthly plans"</td></tr>
+</table>
+<h3>How to Make a Commit on GitHub.com</h3>
+<div class="steps">
+<div class="step"><h4>Edit a File</h4><p>Open any file in your repo and click the pencil icon to edit it.</p></div>
+<div class="step"><h4>Make Your Changes</h4><p>Type your changes in the editor. You will see the changes highlighted.</p></div>
+<div class="step"><h4>Write a Commit Message</h4><p>Scroll down to the "Commit changes" section. Write a short, clear message about what you changed.</p></div>
+<div class="step"><h4>Click Commit Changes</h4><p>Click the green button. Your changes are now saved forever in the project history!</p></div>
+</div>
+<div class="warn"><div class="tag">Important</div><p>You cannot undo a commit, but you CAN revert it (create a new commit that undoes the old one). Think before you commit!</p></div>
+</div>
+</div>
+
+<!-- BRANCHES -->
+<div class="content-section" id="branches">
+<div class="section-header"><h1>Branches</h1><p>Work on new ideas without breaking your main project</p></div>
+<div class="lesson">
+<h2><i class="fas fa-code-branch"></i> What is a Branch?</h2>
+<p>A branch is a separate copy of your project where you can make changes without affecting the main version. When you are happy with your changes, you merge the branch back into the main project.</p>
+<div class="analogy"><div class="tag">Kid-Friendly Analogy</div><p>Imagine you have a coloring book. The "main" branch is your original coloring book. When you want to try coloring a page with different colors, you photocopy that page (create a branch). You color the copy however you want. If it looks amazing, you replace the original page with your new version (merge). If it looks terrible, you just throw away the copy and your original is still perfect!</p></div>
+<h3>The Main Branch</h3>
+<p>Every repo starts with one branch called <strong>main</strong> (sometimes called "master" in older repos). This is your official, stable version. You should never experiment directly on main - always create a new branch first!</p>
+<h3>Common Branch Naming</h3>
+<table class="info-table">
+<tr><th>Branch Name</th><th>Purpose</th></tr>
+<tr><td>main</td><td>The stable, production-ready version</td></tr>
+<tr><td>feature/add-login</td><td>Adding a new feature (login page)</td></tr>
+<tr><td>fix/broken-button</td><td>Fixing a bug (broken button)</td></tr>
+<tr><td>dev</td><td>Development branch for testing new things</td></tr>
+</table>
+<h3>How to Create a Branch</h3>
+<div class="steps">
+<div class="step"><h4>Go to Your Repository</h4><p>Navigate to your repo on GitHub.com</p></div>
+<div class="step"><h4>Click the Branch Dropdown</h4><p>Click where it says "main" near the top left of your file list</p></div>
+<div class="step"><h4>Type a New Branch Name</h4><p>Type a descriptive name like "feature/new-homepage"</p></div>
+<div class="step"><h4>Click Create Branch</h4><p>Click the option to create the new branch. You are now working on your new branch!</p></div>
+</div>
+<div class="tip"><div class="tag">Pro Tip</div><p>Always create a new branch before making changes. This keeps your main branch clean and stable. If something goes wrong on your branch, main is still perfectly fine!</p></div>
+</div>
+</div>
+
+<!-- PULL REQUESTS -->
+<div class="content-section" id="pull-requests">
+<div class="section-header"><h1>Pull Requests (PRs)</h1><p>The polite way to suggest changes to a project</p></div>
+<div class="lesson">
+<h2><i class="fas fa-code-merge"></i> What is a Pull Request?</h2>
+<p>A Pull Request (or PR) is how you tell other people: "Hey, I made some changes on my branch and I think they are good enough to be added to the main project. Can you please review them?" It is the bridge between your branch and the main branch.</p>
+<div class="analogy"><div class="tag">Kid-Friendly Analogy</div><p>Imagine you are in a group art project. You drew something cool on your piece of paper (your branch). Now you raise your hand and say: "Teacher, I would like to add my drawing to the big poster (main branch). Can everyone look at it first?" Your classmates look at it, maybe suggest small improvements, and when everyone agrees it is good, the teacher tapes it onto the poster. That is a Pull Request!</p></div>
+<h3>The Pull Request Workflow</h3>
+<div class="steps">
+<div class="step"><h4>Create a Branch and Make Changes</h4><p>Work on your feature or fix in a separate branch</p></div>
+<div class="step"><h4>Open a Pull Request</h4><p>Go to your repo, click "Pull requests" tab, then "New pull request". Select your branch.</p></div>
+<div class="step"><h4>Describe Your Changes</h4><p>Write a title and description explaining what you changed and why</p></div>
+<div class="step"><h4>Request Reviewers</h4><p>Ask teammates to review your code by adding them as reviewers</p></div>
+<div class="step"><h4>Discuss and Improve</h4><p>Reviewers leave comments. You can make more changes based on feedback.</p></div>
+<div class="step"><h4>Merge the Pull Request</h4><p>Once approved, click the green "Merge" button to add your changes to main!</p></div>
+</div>
+<h3>PR Status Labels</h3>
+<table class="info-table">
+<tr><th>Status</th><th>Meaning</th></tr>
+<tr><td style="color:#3fb950">Open</td><td>The PR is waiting to be reviewed and merged</td></tr>
+<tr><td style="color:#bc8cff">Merged</td><td>The changes have been accepted and added to main</td></tr>
+<tr><td style="color:#f85149">Closed</td><td>The PR was rejected or cancelled without merging</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ISSUES -->
+<div class="content-section" id="issues">
+<div class="section-header"><h1>Issues</h1><p>Your project's to-do list and bug tracker</p></div>
+<div class="lesson">
+<h2><i class="fas fa-exclamation-circle"></i> What are Issues?</h2>
+<p>Issues are like sticky notes for your project. They can be bug reports ("This button is broken!"), feature requests ("It would be cool if we added dark mode"), questions, or tasks to complete.</p>
+<div class="analogy"><div class="tag">Kid-Friendly Analogy</div><p>Think of Issues like a classroom suggestion box and to-do list combined. Anyone can write a note saying "The clock is broken" (bug report) or "Can we get a fish tank?" (feature request). The teacher reads them, assigns people to handle them, and checks them off when done.</p></div>
+<h3>Parts of an Issue</h3>
+<ul>
+<li><strong>Title</strong> - A short summary of the problem or idea</li>
+<li><strong>Description</strong> - Detailed explanation with steps to reproduce bugs</li>
+<li><strong>Labels</strong> - Color tags like "bug", "enhancement", "help wanted"</li>
+<li><strong>Assignees</strong> - Who is responsible for handling this issue</li>
+<li><strong>Milestones</strong> - Which project goal this issue belongs to</li>
+<li><strong>Comments</strong> - Discussion thread where people talk about the issue</li>
+</ul>
+<h3>Common Labels</h3>
+<table class="info-table">
+<tr><th>Label</th><th>Color</th><th>Meaning</th></tr>
+<tr><td>bug</td><td style="color:#f85149">Red</td><td>Something is broken and needs fixing</td></tr>
+<tr><td>enhancement</td><td style="color:#58a6ff">Blue</td><td>A new feature or improvement idea</td></tr>
+<tr><td>help wanted</td><td style="color:#3fb950">Green</td><td>The owner needs help with this</td></tr>
+<tr><td>good first issue</td><td style="color:#bc8cff">Purple</td><td>Easy task perfect for beginners</td></tr>
+<tr><td>documentation</td><td style="color:#d29922">Yellow</td><td>Needs better docs or explanations</td></tr>
+</table>
+<div class="tip"><div class="tag">Pro Tip</div><p>When reporting a bug, always include: what you expected to happen, what actually happened, and the steps to reproduce the problem. Screenshots help a lot!</p></div>
+</div>
+</div>
+
+<!-- GITHUB PAGES -->
+<div class="content-section" id="github-pages">
+<div class="section-header"><h1>GitHub Pages</h1><p>Turn your code into a live website for free!</p></div>
+<div class="lesson">
+<h2><i class="fas fa-globe"></i> What is GitHub Pages?</h2>
+<p>GitHub Pages is a FREE service that takes your HTML, CSS, and JavaScript files from a repository and publishes them as a real website that anyone in the world can visit. No need to buy hosting or a domain name!</p>
+<div class="analogy"><div class="tag">Kid-Friendly Analogy</div><p>Imagine you drew a poster for a school event. GitHub Pages is like the school hallway bulletin board - you pin your poster there and now EVERYONE walking by can see it. Your code files are the poster, and GitHub Pages is the bulletin board that shows them to the world!</p></div>
+<h3>Your Website URL</h3>
+<p>When you enable GitHub Pages, your website gets a free URL that looks like this:<br><strong>https://yourusername.github.io/your-repo-name/</strong><br>For example: https://nicoschotje.github.io/nico-digital-products/</p>
+<h3>How to Enable GitHub Pages</h3>
+<div class="steps">
+<div class="step"><h4>Go to Repository Settings</h4><p>Click the "Settings" tab in your repository</p></div>
+<div class="step"><h4>Click on Pages</h4><p>In the left sidebar under "Code and automation", click "Pages"</p></div>
+<div class="step"><h4>Select Source Branch</h4><p>Under "Branch", select "main" from the dropdown and keep "/ (root)" for the folder</p></div>
+<div class="step"><h4>Click Save</h4><p>Hit Save and wait a few minutes. Your site will be live!</p></div>
+<div class="step"><h4>Visit Your Site</h4><p>Click "Visit site" or go to https://yourusername.github.io/repo-name/</p></div>
+</div>
+<div class="tip"><div class="tag">Pro Tip</div><p>To access a specific HTML file, add the filename to the URL. Example: https://yourusername.github.io/repo-name/my-page.html</p></div>
+</div>
+</div>
+
+<!-- GITHUB ACTIONS -->
+<div class="content-section" id="actions">
+<div class="section-header"><h1>GitHub Actions</h1><p>Automate tasks like a robot assistant for your project</p></div>
+<div class="lesson">
+<h2><i class="fas fa-cogs"></i> What are GitHub Actions?</h2>
+<p>GitHub Actions are automatic tasks that run whenever something happens in your repository. They can test your code, deploy your website, send notifications, and much more - all automatically!</p>
+<div class="analogy"><div class="tag">Kid-Friendly Analogy</div><p>Imagine you have a robot helper in your room. You tell it: "Every time I put my homework on the desk (push code), check it for mistakes (run tests) and then put it in my backpack (deploy)." The robot does this automatically every single time. That is what GitHub Actions does for your code!</p></div>
+<h3>Common Uses</h3>
+<ul>
+<li><strong>Testing</strong> - Automatically check if your code works correctly</li>
+<li><strong>Building</strong> - Compile and package your app automatically</li>
+<li><strong>Deploying</strong> - Push your website live whenever you update code</li>
+<li><strong>Linting</strong> - Check code style and formatting rules</li>
+<li><strong>Notifications</strong> - Send alerts when something happens</li>
+</ul>
+<h3>How Actions Work</h3>
+<table class="info-table">
+<tr><th>Concept</th><th>What It Means</th></tr>
+<tr><td>Workflow</td><td>A set of instructions saved as a YAML file in your repo</td></tr>
+<tr><td>Trigger</td><td>The event that starts the workflow (like a push or PR)</td></tr>
+<tr><td>Job</td><td>A group of steps that run together</td></tr>
+<tr><td>Step</td><td>A single task within a job</td></tr>
+<tr><td>Runner</td><td>The computer that runs your workflow</td></tr>
+</table>
+<div class="warn"><div class="tag">Note</div><p>GitHub gives you 2,000 free minutes per month for Actions on free accounts. That is plenty for most personal projects!</p></div>
+</div>
+</div>
+
+<!-- FORKS AND STARS -->
+<div class="content-section" id="forks-stars">
+<div class="section-header"><h1>Forks &amp; Stars</h1><p>The social features of GitHub</p></div>
+<div class="lesson">
+<h2><i class="fas fa-star"></i> Stars - Bookmarking Projects You Like</h2>
+<p>Starring a repo is like giving it a thumbs up or bookmarking it. It helps you find it later and shows the creator that you appreciate their work. The more stars a project has, the more popular it is!</p>
+<h2><i class="fas fa-code-branch"></i> Forks - Making Your Own Copy</h2>
+<p>Forking a repo creates a complete copy of someone else's project under YOUR account. You can then change it however you want without affecting the original. It is the foundation of open source collaboration!</p>
+<div class="analogy"><div class="tag">Kid-Friendly Analogy</div><p><strong>Stars</strong> are like putting a gold sticker on your favorite book in the library. <strong>Forks</strong> are like photocopying the entire book so you can write notes in your own copy, highlight things, or even add new chapters!</p></div>
+<h3>When to Fork</h3>
+<ul>
+<li>You want to contribute to someone else's project</li>
+<li>You want to use someone's project as a starting point for your own</li>
+<li>You want to experiment with someone's code without affecting the original</li>
+</ul>
+<h3>Fork + PR = Open Source Magic</h3>
+<div class="steps">
+<div class="step"><h4>Fork the Repository</h4><p>Click the "Fork" button on any public repo to get your own copy</p></div>
+<div class="step"><h4>Make Changes in Your Fork</h4><p>Edit files in your forked copy however you want</p></div>
+<div class="step"><h4>Submit a Pull Request</h4><p>Send your changes back to the original project for review</p></div>
+</div>
+</div>
+</div>
+
+<!-- PROJECTS -->
+<div class="content-section" id="projects">
+<div class="section-header"><h1>GitHub Projects</h1><p>Organize your work like a pro with project boards</p></div>
+<div class="lesson">
+<h2><i class="fas fa-project-diagram"></i> What are GitHub Projects?</h2>
+<p>GitHub Projects is a built-in project management tool. It gives you a board (like a digital whiteboard) with columns where you can track tasks, organize work, and see progress at a glance.</p>
+<div class="analogy"><div class="tag">Kid-Friendly Analogy</div><p>Think of it like a big whiteboard in your room with three columns: "To Do", "Doing", and "Done". You write tasks on sticky notes and move them from left to right as you work. GitHub Projects is the digital version of this!</p></div>
+<h3>Default Columns</h3>
+<table class="info-table">
+<tr><th>Column</th><th>Purpose</th></tr>
+<tr><td>To Do</td><td>Tasks that need to be done but have not started yet</td></tr>
+<tr><td>In Progress</td><td>Tasks currently being worked on</td></tr>
+<tr><td>Done</td><td>Completed tasks</td></tr>
+</table>
+<div class="tip"><div class="tag">Pro Tip</div><p>You can link Issues and Pull Requests directly to your project board. When a PR is merged, the linked card automatically moves to "Done"!</p></div>
+</div>
+</div>
+
+<!-- SETTINGS -->
+<div class="content-section" id="settings">
+<div class="section-header"><h1>Settings &amp; Security</h1><p>Protect your account and configure your repositories</p></div>
+<div class="lesson">
+<h2><i class="fas fa-shield-alt"></i> Account Security</h2>
+<ul>
+<li><strong>Two-Factor Authentication (2FA)</strong> - Adds an extra layer of protection. Even if someone knows your password, they cannot log in without your phone code. ALWAYS enable this!</li>
+<li><strong>Strong Password</strong> - Use a unique, long password for GitHub</li>
+<li><strong>SSH Keys</strong> - A secure way to connect your computer to GitHub without typing your password every time</li>
+<li><strong>Personal Access Tokens</strong> - Special passwords for apps that need to access your GitHub</li>
+</ul>
+<h2><i class="fas fa-sliders-h"></i> Repository Settings</h2>
+<h3>Key Settings You Should Know</h3>
+<table class="info-table">
+<tr><th>Setting</th><th>What It Does</th><th>Recommendation</th></tr>
+<tr><td>Visibility</td><td>Public or Private repo</td><td>Private for personal, Public for open source</td></tr>
+<tr><td>Branch Protection</td><td>Prevents direct pushes to main</td><td>Enable for team projects</td></tr>
+<tr><td>GitHub Pages</td><td>Publish repo as a website</td><td>Enable for HTML projects</td></tr>
+<tr><td>Collaborators</td><td>Who can push to your repo</td><td>Only add people you trust</td></tr>
+<tr><td>Webhooks</td><td>Notify external services of changes</td><td>Use for deployment automation</td></tr>
+</table>
+<div class="warn"><div class="tag">Security Warning</div><p>NEVER commit passwords, API keys, or secrets to your repository! Use environment variables or GitHub Secrets instead. Once a secret is in your commit history, it is very hard to remove completely.</p></div>
+</div>
+</div>
+
+<!-- COLLABORATION -->
+<div class="content-section" id="collaboration">
+<div class="section-header"><h1>Collaboration</h1><p>Working together with other people on GitHub</p></div>
+<div class="lesson">
+<h2><i class="fas fa-users"></i> How Teams Work on GitHub</h2>
+<p>GitHub is built for collaboration. Here is how multiple people work together on the same project without stepping on each other's toes:</p>
+<h3>The Collaboration Workflow</h3>
+<div class="steps">
+<div class="step"><h4>Owner Creates the Repo</h4><p>One person creates the repository and adds collaborators</p></div>
+<div class="step"><h4>Each Person Creates a Branch</h4><p>Everyone works on their own branch for their task</p></div>
+<div class="step"><h4>Make Changes and Commit</h4><p>Each person makes changes and commits them to their branch</p></div>
+<div class="step"><h4>Open Pull Requests</h4><p>When ready, each person opens a PR to merge their branch into main</p></div>
+<div class="step"><h4>Review Each Other's Work</h4><p>Team members review PRs, leave comments, and suggest improvements</p></div>
+<div class="step"><h4>Merge Approved Changes</h4><p>Once approved, changes are merged into main</p></div>
+</div>
+<h3>Collaboration Roles</h3>
+<table class="info-table">
+<tr><th>Role</th><th>Can Read</th><th>Can Write</th><th>Can Admin</th></tr>
+<tr><td>Read</td><td>Yes</td><td>No</td><td>No</td></tr>
+<tr><td>Write</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+<tr><td>Admin</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+</table>
+<div class="tip"><div class="tag">Pro Tip</div><p>Use CODEOWNERS file to automatically assign reviewers. Use issue templates to standardize bug reports. Use PR templates to ensure contributors provide all needed info.</p></div>
+</div>
+</div>
+
+<!-- BEST PRACTICES -->
+<div class="content-section" id="best-practices">
+<div class="section-header"><h1>Best Practices</h1><p>The golden rules for using GitHub like a professional</p></div>
+<div class="lesson">
+<h2><i class="fas fa-trophy"></i> The 10 Golden Rules of GitHub</h2>
+<div class="steps">
+<div class="step"><h4>Always Use Branches</h4><p>Never work directly on main. Create a branch for every feature, fix, or experiment.</p></div>
+<div class="step"><h4>Write Clear Commit Messages</h4><p>Start with a verb: "Add", "Fix", "Update", "Remove". Make it clear what changed and why.</p></div>
+<div class="step"><h4>Commit Often, Push Often</h4><p>Small, frequent commits are better than one massive commit. This makes it easier to find bugs.</p></div>
+<div class="step"><h4>Always Add a README</h4><p>Every repo needs a README that explains what the project does, how to set it up, and how to use it.</p></div>
+<div class="step"><h4>Use .gitignore</h4><p>Create a .gitignore file to exclude files that should not be tracked (like passwords, build files, node_modules).</p></div>
+<div class="step"><h4>Review Before Merging</h4><p>Always have at least one other person review your Pull Request before merging.</p></div>
+<div class="step"><h4>Use Issues for Everything</h4><p>Track bugs, features, and tasks with Issues. It keeps everything organized and visible.</p></div>
+<div class="step"><h4>Protect Your Main Branch</h4><p>Set up branch protection rules so nobody can push directly to main without a review.</p></div>
+<div class="step"><h4>Never Commit Secrets</h4><p>API keys, passwords, and tokens should NEVER be in your code. Use environment variables instead.</p></div>
+<div class="step"><h4>Enable 2FA</h4><p>Two-Factor Authentication protects your account. Enable it immediately!</p></div>
+</div>
+</div>
+</div>
+
+<!-- CHEAT SHEET -->
+<div class="content-section" id="cheatsheet">
+<div class="section-header"><h1>GitHub Cheat Sheet</h1><p>Quick reference for the most common GitHub tasks</p></div>
+<div class="lesson">
+<h2><i class="fas fa-scroll"></i> Web Interface Quick Actions</h2>
+<table class="info-table">
+<tr><th>Task</th><th>How to Do It</th></tr>
+<tr><td>Create a new repo</td><td>Click "+" icon top right then "New repository"</td></tr>
+<tr><td>Create a file</td><td>Click "Add file" then "Create new file"</td></tr>
+<tr><td>Upload files</td><td>Click "Add file" then "Upload files"</td></tr>
+<tr><td>Edit a file</td><td>Open the file and click the pencil icon</td></tr>
+<tr><td>Delete a file</td><td>Open the file, click "..." menu, then "Delete"</td></tr>
+<tr><td>Create a branch</td><td>Click branch dropdown, type new name, click Create</td></tr>
+<tr><td>Open a Pull Request</td><td>Go to PR tab, click "New pull request"</td></tr>
+<tr><td>Create an Issue</td><td>Go to Issues tab, click "New issue"</td></tr>
+<tr><td>Enable Pages</td><td>Settings then Pages then select branch then Save</td></tr>
+<tr><td>Star a repo</td><td>Click the Star button at top right of any repo</td></tr>
+<tr><td>Fork a repo</td><td>Click the Fork button at top right of any repo</td></tr>
+<tr><td>Search code</td><td>Use the search bar at top or press "/" key</td></tr>
+</table>
+<h2><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h2>
+<table class="info-table">
+<tr><th>Shortcut</th><th>Action</th></tr>
+<tr><td>s or /</td><td>Focus the search bar</td></tr>
+<tr><td>t</td><td>Open file finder</td></tr>
+<tr><td>g then c</td><td>Go to Code tab</td></tr>
+<tr><td>g then i</td><td>Go to Issues tab</td></tr>
+<tr><td>g then p</td><td>Go to Pull Requests tab</td></tr>
+<tr><td>?</td><td>Show all keyboard shortcuts</td></tr>
+</table>
+<h2><i class="fas fa-link"></i> URL Patterns</h2>
+<table class="info-table">
+<tr><th>What</th><th>URL Pattern</th></tr>
+<tr><td>Your Profile</td><td>github.com/yourusername</td></tr>
+<tr><td>A Repository</td><td>github.com/owner/repo-name</td></tr>
+<tr><td>Issues</td><td>github.com/owner/repo/issues</td></tr>
+<tr><td>Pull Requests</td><td>github.com/owner/repo/pulls</td></tr>
+<tr><td>GitHub Pages</td><td>yourusername.github.io/repo-name</td></tr>
+</table>
+</div>
+</div>
+
+</main>
+
+<script>
+const sections=['welcome','what-is-github','repositories','commits','branches','pull-requests','issues','github-pages','actions','forks-stars','projects','settings','collaboration','best-practices','cheatsheet'];
+let visited=new Set(['welcome']);
+
+function showSection(id){
+ document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+ const items=document.querySelectorAll('.nav-item');
+ items.forEach(n=>{if(n.textContent.trim()===getNavText(id))n.classList.add('active')});
+ visited.add(id);
+ updateProgress();
+ document.querySelector('.sidebar').classList.remove('open');
+ document.querySelector('.overlay').classList.remove('show');
+ window.scrollTo(0,0);
+}
+
+function getNavText(id){
+ const map={'welcome':'Welcome Home','what-is-github':'What is GitHub?','repositories':'Repositories','commits':'Commits','branches':'Branches','pull-requests':'Pull Requests','issues':'Issues','github-pages':'GitHub Pages','actions':'GitHub Actions','forks-stars':'Forks & Stars','projects':'Projects Board','settings':'Settings & Security','collaboration':'Collaboration','best-practices':'Best Practices','cheatsheet':'Cheat Sheet'};
+ return map[id]||id;
+}
+
+function updateProgress(){
+ const pct=Math.round((visited.size/sections.length)*100);
+ document.getElementById('progressPct').textContent=pct+'%';
+ document.getElementById('progressBar').style.width=pct+'%';
+}
+
+function checkAnswer(el,quizId,correct){
+ const quiz=document.getElementById(quizId);
+ const opts=quiz.querySelectorAll('.quiz-opt');
+ opts.forEach(o=>{o.style.pointerEvents='none';});
+ if(correct){el.classList.add('correct');}
+ else{el.classList.add('wrong');opts.forEach(o=>{if(o.getAttribute('onclick').includes('true'))o.classList.add('correct');});}
+}
+
+updateProgress();
+</script>
+</body>
+</html>
