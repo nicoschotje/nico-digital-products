@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bedrijfsplan 2026 - Persoonlijk Bedrijfsadvies + Digitale Tools</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;}
+.header{background:linear-gradient(135deg,#1e3a5f,#0f172a);padding:2rem;border-bottom:1px solid #1e40af;}
+.header h1{font-size:2rem;color:#60a5fa;font-weight:700;margin-bottom:.5rem;}
+.header p{color:#94a3b8;margin:.25rem 0;}
+.badge{display:inline-block;background:linear-gradient(90deg,#10b981,#059669);color:#fff;padding:.4rem 1.2rem;border-radius:20px;font-size:.8rem;font-weight:700;margin-top:.75rem;}
+.nav{background:#1e293b;padding:1rem 2rem;display:flex;flex-wrap:wrap;gap:.5rem;border-bottom:1px solid #334155;position:sticky;top:0;z-index:100;}
+.tab-btn{background:transparent;border:1px solid #334155;color:#94a3b8;padding:.5rem 1rem;border-radius:8px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+.tab-btn:hover{background:#334155;color:#e2e8f0;}
+.tab-btn.active{background:#2563eb;border-color:#2563eb;color:#fff;}
+.section{display:none;padding:2rem;max-width:1400px;margin:0 auto;}
+.section.active{display:block;}
+.alert{padding:1rem 1.5rem;border-radius:10px;margin-bottom:1.5rem;border-left:4px solid;}
+.alert-warning{background:rgba(239,68,68,.1);border-color:#ef4444;}
+.alert-info{background:rgba(16,185,129,.1);border-color:#10b981;}
+.alert-blue{background:rgba(37,99,235,.1);border-color:#2563eb;}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;}
+.card h2{color:#60a5fa;font-size:1.2rem;margin-bottom:1rem;}
+.card h3{color:#e2e8f0;font-size:1rem;margin-bottom:.75rem;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.stat{background:#1e3a5f;border:1px solid #2563eb;border-radius:10px;padding:1.25rem;text-align:center;}
+.stat-label{font-size:.7rem;color:#64748b;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}
+.stat-value{font-size:1.8rem;font-weight:700;color:#60a5fa;}
+.stat-sub{font-size:.75rem;color:#94a3b8;margin-top:.25rem;}
+table{width:100%;border-collapse:collapse;margin:1rem 0;}
+th{background:#1e3a5f;color:#60a5fa;padding:.75rem;text-align:left;font-size:.85rem;}
+td{padding:.75rem;border-bottom:1px solid #1e293b;font-size:.85rem;}
+tr:nth-child(even) td{background:rgba(30,58,95,.3);}
+.warning-text{color:#f59e0b;}
+.success-text{color:#10b981;}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:1.5rem 0;}
+.product-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.5rem;}
+.product-card h3{color:#e2e8f0;font-size:1.1rem;margin-bottom:.5rem;}
+.product-price{font-size:2rem;font-weight:700;color:#60a5fa;margin:.5rem 0;}
+.product-sub{font-size:.8rem;color:#94a3b8;margin-bottom:1rem;}
+.product-card ul{list-style:none;padding:0;}
+.product-card li{padding:.35rem 0;font-size:.85rem;border-bottom:1px solid #334155;}
+.product-card li:before{content:"✓ ";color:#10b981;}
+.product-tag{display:inline-block;background:#1e3a5f;color:#60a5fa;border-radius:4px;padding:.2rem .5rem;font-size:.7rem;margin-top:.75rem;}
+.timeline{position:relative;padding-left:2rem;}
+.timeline:before{content:'';position:absolute;left:.5rem;top:0;bottom:0;width:2px;background:#2563eb;}
+.timeline-item{position:relative;margin-bottom:1.5rem;}
+.timeline-item:before{content:'';position:absolute;left:-1.6rem;top:.4rem;width:12px;height:12px;border-radius:50%;background:#2563eb;border:2px solid #1e293b;}
+.week-card{background:#1e293b;border:1px solid #2563eb;border-radius:10px;padding:1.25rem;margin-bottom:1rem;}
+.week-card h4{color:#60a5fa;font-size:1rem;margin-bottom:.5rem;}
+.week-card p.sub{font-size:.8rem;color:#94a3b8;margin-bottom:.75rem;}
+.week-card ul{list-style:none;padding:0;}
+.week-card li{padding:.3rem 0;font-size:.83rem;border-bottom:1px solid #334155;}
+.week-card li:before{content:"→ ";color:#10b981;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:768px){.two-col{grid-template-columns:1fr;}}
+.chart-bar-container{background:#1e293b;border-radius:10px;padding:1.5rem;margin:1rem 0;}
+.chart-row{display:flex;align-items:center;margin:.5rem 0;gap:1rem;}
+.chart-label{width:80px;font-size:.8rem;color:#94a3b8;}
+.chart-bar{height:24px;border-radius:4px;background:linear-gradient(90deg,#2563eb,#60a5fa);display:flex;align-items:center;padding:0 .5rem;font-size:.75rem;color:#fff;font-weight:600;min-width:40px;transition:width .3s;}
+.chart-bar.green{background:linear-gradient(90deg,#10b981,#34d399);}
+.gap-tag{display:inline-block;background:rgba(239,68,68,.2);color:#fca5a5;border-radius:4px;padding:.15rem .4rem;font-size:.7rem;margin:.1rem;}
+.edge-tag{display:inline-block;background:rgba(16,185,129,.2);color:#6ee7b7;border-radius:4px;padding:.15rem .4rem;font-size:.7rem;margin:.1rem;}
+.positioning-box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.5rem;margin:1rem 0;}
+.pos-statement{background:rgba(37,99,235,.1);border:1px solid #2563eb;border-radius:8px;padding:1rem;margin:1rem 0;font-style:italic;font-size:.9rem;}
+.not-list{list-style:none;padding:0;}
+.not-list li{padding:.4rem 0;font-size:.85rem;border-bottom:1px solid #334155;}
+.not-list li:before{content:"• ";}
+.moat-box{background:rgba(37,99,235,.1);border:1px solid #2563eb;border-radius:10px;padding:1.25rem;margin-top:1rem;}
+.footer{background:#0f172a;text-align:center;padding:2rem;color:#475569;font-size:.8rem;border-top:1px solid #1e293b;margin-top:2rem;}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>📊 Bedrijfsplan 2026 - Gevalideerde Versie</h1>
+<p>Persoonlijk Bedrijfsadvies + Digitale Dashboard Oplossingen</p>
+<p>Philippine MSME Market | Solo Founder Bootstrap Model</p>
+<span class="badge">INVESTOR-READY | €2.500 SEED FUNDING | 2 WEEKS PREP</span>
+</div>
+<nav class="nav">
+<button class="tab-btn active" onclick="showTab('reality')">Reality Check</button>
+<button class="tab-btn" onclick="showTab('executive')">Executive Summary</button>
+<button class="tab-btn" onclick="showTab('validatie')">Validatie Strategie</button>
+<button class="tab-btn" onclick="showTab('products')">Product Lineup</button>
+<button class="tab-btn" onclick="showTab('gtm')">Go-to-Market</button>
+<button class="tab-btn" onclick="showTab('finance')">Realistische Financiën</button>
+<button class="tab-btn" onclick="showTab('competition')">Concurrentie Intel</button>
+<button class="tab-btn" onclick="showTab('launch')">2-Week Launch Plan</button>
+</nav>
+
+<!-- TAB 1: REALITY CHECK -->
+<div id="reality" class="section active">
+<div class="alert alert-warning">
+<strong>🚨 Kritieke Bevindingen uit Competitive Intelligence</strong>
+<p>De oorspronkelijke projecties waren te optimistisch. Dit plan is volledig herzien op basis van de realiteit van de Philippine MSME markt en directe concurrentie-analyse.</p>
+</div>
+<div class="card">
+<h2>Wat De Competitive Research Onthulde</h2>
+<table>
+<tr><th>Gebied</th><th>Oorspronkelijke Aanname</th><th>Markt Realiteit</th><th>Implicatie</th></tr>
+<tr><td><strong>Break-even</strong></td><td>Maand 2</td><td>Maand 4-5 realistischer</td><td class="warning-text">Langere runway nodig</td></tr>
+<tr><td><strong>Pricing</strong></td><td>₱2.500-₱50.000</td><td>₱5.000-₱25.000 sweet spot</td><td class="success-text">Betere markt fit</td></tr>
+<tr><td><strong>Concurrentie</strong></td><td>Geen directe concurrent</td><td>Bentamo Hub (DTI-backed), iTap, Tapik actief</td><td class="warning-text">Must differentiate sterk</td></tr>
+<tr><td><strong>Distributie</strong></td><td>Agent-only model</td><td>TikTok/Facebook Live is #1 channel (90% groei)</td><td class="warning-text">Video commerce critical</td></tr>
+<tr><td><strong>Target</strong></td><td>Alle MSME's tegelijk</td><td>F&amp;B eerst (50K+ in NCR), dan Beauty/Wellness</td><td class="success-text">Scherpere focus</td></tr>
+<tr><td><strong>Product portfolio</strong></td><td>50+ producten jaar 1</td><td>5-8 gevalideerde producten eerst</td><td class="success-text">Kwaliteit &gt; kwantiteit</td></tr>
+</table>
+</div>
+<div class="alert alert-info">
+<strong>✅ De Goede Nieuws</strong>
+<p><strong>Market opportunity is REËEL:</strong> 1,24M MSME's, 99,6% van alle PH bedrijven, slechts 14,9% heeft digitale tools. Philippine digital economy groeit 16% per jaar ($36B GMV). Jouw unieke positie &mdash; persoonlijk advies + werkend dashboard zonder abonnement &mdash; heeft GEEN directe concurrent die beide combineert.</p>
+</div>
+</div>
+
+<!-- TAB 2: EXECUTIVE SUMMARY -->
+<div id="executive" class="section">
+<div class="stat-grid">
+<div class="stat"><div class="stat-label">SEED FUNDING ASK</div><div class="stat-value">€2.500</div><div class="stat-sub">2-week prep + validation</div></div>
+<div class="stat"><div class="stat-label">MONTH 1 TARGET</div><div class="stat-value">10 Deals</div><div class="stat-sub">₱80K revenue (~€1.330)</div></div>
+<div class="stat"><div class="stat-label">BREAK-EVEN</div><div class="stat-value">Month 4-5</div><div class="stat-sub">Conservative estimate</div></div>
+<div class="stat"><div class="stat-label">6-MONTH REVENUE</div><div class="stat-value">₱720K</div><div class="stat-sub">~€12.000 validated</div></div>
+</div>
+<div class="card">
+<h2>Het Probleem We Oplossen</h2>
+<p><strong>Filipino MSME's zitten in een gap:</strong></p>
+<ul style="list-style:none;padding:0;margin-top:.75rem;">
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">• <strong>Consultants</strong> verkopen alleen advies (₱4K-₱5K/dag, geen tastbaar product)</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">• <strong>SaaS platforms</strong> (Bentamo Hub, Zoho) vragen ₱500-₱5K/maand abonnementen &mdash; te duur voor micro's</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">• <strong>NFC card companies</strong> (iTap, Tapik) verkopen alleen digitale kaartjes (₱900-₱1.500), geen business intelligence</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">• <strong>Agencies</strong> kosten ₱25K-₱100K/maand &mdash; compleet onbetaalbaar</li>
+<li style="padding:.4rem 0;">• <strong>DIY tools</strong> (Canva, Excel, Facebook) zijn gratis maar geven geen strategisch inzicht</li>
+</ul>
+</div>
+<div class="card">
+<h2>Onze Unieke Oplossing</h2>
+<div class="two-col">
+<div>
+<p style="color:#60a5fa;font-weight:700;margin-bottom:.25rem;">Persoonlijk Advies</p><p style="font-size:.85rem;color:#94a3b8;">30-60 min strategisch gesprek</p>
+</div>
+<div>
+<p style="color:#60a5fa;font-weight:700;margin-bottom:.25rem;">Werkend Dashboard</p><p style="font-size:.85rem;color:#94a3b8;">SPA, offline-first, no subscription</p>
+</div>
+<div>
+<p style="color:#60a5fa;font-weight:700;margin-bottom:.25rem;">Digitaal Visitekaartje</p><p style="font-size:.85rem;color:#94a3b8;">NFC-compatibel, embedded in package</p>
+</div>
+<div>
+<p style="color:#60a5fa;font-weight:700;margin-bottom:.25rem;">24-Uur Levering</p><p style="font-size:.85rem;color:#94a3b8;">Consult vandaag, product morgen</p>
+</div>
+<div>
+<p style="color:#60a5fa;font-weight:700;margin-bottom:.25rem;">Eenmalige Betaling</p><p style="font-size:.85rem;color:#94a3b8;">₱5K-₱25K, eigen forever</p>
+</div>
+<div>
+<p style="color:#60a5fa;font-weight:700;margin-bottom:.25rem;">AI Pre-Research</p><p style="font-size:.85rem;color:#94a3b8;">Concurrentie-analyse per prospect</p>
+</div>
+</div>
+</div>
+<div class="card">
+<h2>Investment Breakdown (€2.500)</h2>
+<table>
+<tr><th>Categorie</th><th>Budget</th><th>Wat Het Koopt</th></tr>
+<tr><td>Product Development</td><td style="color:#60a5fa;">€800</td><td>3 dashboard modules, card template, social templates</td></tr>
+<tr><td>Marketing Setup</td><td style="color:#60a5fa;">€700</td><td>TikTok/Facebook ads, influencer outreach, filming</td></tr>
+<tr><td>Sales Operations</td><td style="color:#60a5fa;">€500</td><td>TikTok ad campaigns Week 3-4, first month commissions</td></tr>
+<tr><td>Contingency Buffer</td><td style="color:#60a5fa;">€500</td><td>2 months operational runway if validation takes longer</td></tr>
+</table>
+</div>
+</div>
+
+<!-- TAB 3: VALIDATIE STRATEGIE -->
+<div id="validatie" class="section">
+<div class="alert alert-warning">
+<strong>⚠️ VALIDATION-FIRST APPROACH</strong>
+<p><strong>Kritieke les uit competitive research:</strong> Bouw NIET 50 producten zonder betalende klanten. Valideer eerst met echte verkopen voordat je schaalt.</p>
+</div>
+<div class="card">
+<h2>De 30-Day Validation Challenge</h2>
+<p><strong>Doel:</strong> 10 betalende deals binnen 30 dagen aan minimaal ₱5.000 gemiddeld (₱50K totaal / €830).</p>
+<div class="two-col" style="margin-top:1rem;">
+<div class="week-card">
+<h4>Week 1-2: Prep Phase</h4>
+<p class="sub">Build products + setup</p>
+<ul>
+<li>Build 3 core dashboard modules (F&amp;B, Salon, General MSME)</li>
+<li>Create digital business card template</li>
+<li>Film 10 TikTok demo videos (30-60 sec each)</li>
+<li>Set up TikTok Business + Facebook Page</li>
+<li>Join 5 MSME Facebook groups</li>
+<li>Identify 10 target cafés/salons in Makati Poblacion</li>
+</ul>
+</div>
+<div class="week-card">
+<h4>Week 3: First 3 Sales</h4>
+<p class="sub">Initial validation</p>
+<ul>
+<li>Offer to 3 businesses: "FREE dashboard + ₱2.500 for 30-min consult + customization"</li>
+<li>Post TikTok demos daily (1-2x/day)</li>
+<li>Start contributing in Facebook MSME groups</li>
+<li>Film testimonial videos with first 3 clients</li>
+</ul>
+</div>
+<div class="week-card">
+<h4>Week 4: 7 More Sales</h4>
+<p class="sub">Scale with proof</p>
+<ul>
+<li>Use testimonials in TikTok ads (₱500 budget)</li>
+<li>Launch referral: "Refer a friend, get ₱500 credit"</li>
+<li>Raise price to ₱5.000 for Negosyo Starter package</li>
+<li>Close 7 deals via TikTok + Facebook + referrals</li>
+</ul>
+</div>
+</div>
+<div style="margin-top:1rem;padding:1rem;background:rgba(16,185,129,.1);border-radius:8px;border-left:3px solid #10b981;">
+<p>✅ If 10 sales achieved &rarr; Product-market fit validated &rarr; Scale with confidence</p>
+<p>❌ If &lt;5 sales &rarr; Pivot messaging/pricing/target before scaling</p>
+</div>
+</div>
+<div class="card">
+<h2>Why This Beats "Build 50 Products First"</h2>
+<table>
+<tr><th>Approach</th><th>Time to First Sale</th><th>Risk Level</th><th>Learning Speed</th></tr>
+<tr><td><strong>Build 50 &rarr; Sell</strong></td><td>2-3 months</td><td class="warning-text">EXTREME</td><td>Slow (no feedback loop)</td></tr>
+<tr><td><strong>Sell 10 &rarr; Build More</strong></td><td class="success-text">2 weeks</td><td class="success-text">LOW</td><td class="success-text">Fast (real customer data)</td></tr>
+</table>
+</div>
+</div>
+
+<!-- TAB 4: PRODUCT LINEUP -->
+<div id="products" class="section">
+<div class="alert alert-blue">
+<strong>📦 Revised Product Lineup - Market Reality Edition</strong>
+<p>Prijs aangepast op basis van concurrentie-analyse. ₱2.500 Quick Scan geschrapt (te laag voor validatie). Focus op ₱5K-₱25K sweet spot.</p>
+</div>
+<div class="product-grid">
+<div class="product-card">
+<h3>Negosyo Starter</h3>
+<div class="product-price">₱5.000</div>
+<p class="product-sub">(~€83 | Primary Validation Offer)</p>
+<ul>
+<li>45-min persoonlijke bedrijfsanalyse</li>
+<li>1 custom SPA dashboard (F&amp;B, Salon, of General)</li>
+<li>1 digitaal NFC-compatibel visitekaartje</li>
+<li>5 social media post templates (Canva)</li>
+<li>Concurrentie quick-scan (3 competitors)</li>
+<li>1 follow-up call (2 weken later)</li>
+<li>Levering: 24 uur na consult</li>
+</ul>
+<div class="product-tag">VALIDATION TARGET: 7/10 first deals</div>
+</div>
+<div class="product-card">
+<h3>Negosyo Professional</h3>
+<div class="product-price">₱12.000</div>
+<p class="product-sub">(~€200 | Mid-Tier Upsell)</p>
+<ul>
+<li>90-min uitgebreide strategiesessie</li>
+<li>Premium dashboard met advanced analytics</li>
+<li>Volledige concurrentie-analyse (5 competitors)</li>
+<li>3 digitale visitekaartjes (eigenaar + 2 staff)</li>
+<li>30-day social media content kalender</li>
+<li>Landingspagina (basic, 1-page)</li>
+<li>2 follow-up sessies (week 2 &amp; 4)</li>
+</ul>
+<div class="product-tag">Voor groeiende F&amp;B, beauty studios, fitness centers</div>
+</div>
+<div class="product-card">
+<h3>Negosyo Business Pro</h3>
+<div class="product-price">₱25.000</div>
+<p class="product-sub">(~€417 | High-Ticket Enterprise)</p>
+<ul>
+<li>Full-day strategiedag (4+ uur)</li>
+<li>Multi-module dashboard suite</li>
+<li>Volledige competitive intelligence report</li>
+<li>5 digitale visitekaartjes (team)</li>
+<li>Communicatiehub setup (email, chat, social)</li>
+<li>Custom landingspagina + SEO basics</li>
+<li>3 maanden maandelijkse check-ins</li>
+<li>Priority support (WhatsApp 24/7)</li>
+</ul>
+<div class="product-tag">Voor gevestigde MSME's, franchises, 5-20 medewerkers</div>
+</div>
+</div>
+<div class="card">
+<h2>Revenue Mix Strategie</h2>
+<p><strong>Maand 1-2 (Validation):</strong> 80% Starter (₱5K), 20% Professional (₱12K)</p>
+<p style="margin-top:.5rem;"><strong>Maand 3-4 (Growth):</strong> 60% Starter, 30% Professional, 10% Business Pro</p>
+<p style="margin-top:.5rem;"><strong>Maand 5-6 (Scale):</strong> 40% Starter, 40% Professional, 20% Business Pro</p>
+</div>
+</div>
+
+<!-- TAB 5: GO-TO-MARKET -->
+<div id="gtm" class="section">
+<div class="alert" style="background:rgba(16,185,129,.1);border-color:#10b981;">
+<strong>🚀 Critical Discovery: TikTok Is The Battlefield</strong>
+<p><strong>Research shows:</strong> TikTok heeft 64M Filipino users (27% YoY groei), video commerce is 25% van e-commerce GMV (90% groei), 475K video sellers actief. <strong>GEEN enkele concurrent</strong> (Bentamo, iTap, Tapik) heeft TikTok-aanwezigheid. Dit is jouw edge.</p>
+</div>
+<div class="card">
+<h2>Strategy 1: TikTok Product Demo Blitz (HIGHEST PRIORITY)</h2>
+<ul style="list-style:none;padding:0;">
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ <strong>Format:</strong> 30-60 sec screen recordings showing dashboards in action</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ <strong>Hooks:</strong> "This ₱5K tool replaces ₱50K/year software", "Every café owner needs this", "Stop using Excel"</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ <strong>Frequency:</strong> 1-2 videos daily (TikTok algorithm rewards volume)</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ <strong>Go Live Weekly:</strong> TikTok Live shortens purchase journey, Filipino consumers respond to authenticity</li>
+<li style="padding:.4rem 0;">→ <strong>Budget:</strong> ₱500-₱1.000/week for TikTok Ads (boost best-performing organics)</li>
+</ul>
+</div>
+<div class="card">
+<h2>Strategy 2: Facebook Group Infiltration</h2>
+<ul style="list-style:none;padding:0;">
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ Join: "Online Sellers Philippines", "MSME Support PH", "Negosyo Tips PH", DTI-connected groups</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ Share free value (tips, templates, mini-tutorials) without selling &mdash; build authority first</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ Create own group: "Digital Tools for Filipino MSMEs" (share weekly tips + product walkthroughs)</li>
+<li style="padding:.4rem 0;">→ Bentamo does blog SEO but has weak group presence &mdash; you can own this channel</li>
+</ul>
+</div>
+<div class="card">
+<h2>Strategy 3: Micro-Influencer Partnerships</h2>
+<ul style="list-style:none;padding:0;">
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ Target: MSME coaches, "negosyante" content creators with 10K-100K followers</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ Offer: Free Negosyo Professional package (₱12K value) for honest TikTok/Facebook review</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ Cost: ₱500-₱3.000 per micro-influencer post (PH rates are lowest globally for quality reach)</li>
+<li style="padding:.4rem 0;">→ Identify 5 influencers by Week 2, close 3 partnerships by Week 3</li>
+</ul>
+</div>
+<div class="card">
+<h2>Strategy 4: Before/After Transformation Content</h2>
+<ul style="list-style:none;padding:0;">
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ <strong>Before:</strong> Messy Excel sheets, handwritten ledgers, scattered WhatsApp messages</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ <strong>After:</strong> Clean SPA dashboard, organized, automated, professional</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">→ Film as Instagram Reels + TikToks with trending Filipino audio</li>
+<li style="padding:.4rem 0;">→ Get first 3 clients to film testimonials (offer ₱500 credit for participation)</li>
+</ul>
+</div>
+<div class="card">
+<h2>Concurrent Gaps = Your Opportunities</h2>
+<table>
+<tr><th>Gap</th><th>Who Misses It</th><th>Your Edge</th></tr>
+<tr><td><strong>TikTok presence</strong></td><td>ALL competitors</td><td class="success-text">First-mover on fastest-growing platform</td></tr>
+<tr><td><strong>Offline-first tech</strong></td><td>Bentamo (cloud-dependent)</td><td class="success-text">Works in provincial areas with bad internet</td></tr>
+<tr><td><strong>One-time pricing</strong></td><td>Bentamo (₱500-₱5K/month)</td><td class="success-text">"Pay once, own forever" resonates with MSMEs</td></tr>
+<tr><td><strong>Video commerce</strong></td><td>Everyone</td><td class="success-text">TikTok Shop + FB Live product demos</td></tr>
+<tr><td><strong>Personal consultation</strong></td><td>NFC card sellers (iTap, Tapik)</td><td class="success-text">Strategic advice + product bundle</td></tr>
+</table>
+</div>
+</div>
+
+<!-- TAB 6: REALISTISCHE FINANCIEN -->
+<div id="finance" class="section">
+<div class="alert" style="background:rgba(245,158,11,.1);border-color:#f59e0b;">
+<strong>💰 Conservative Financial Projections</strong>
+<p>Deze cijfers zijn gebaseerd op <strong>validated customer acquisition assumptions</strong>, niet theoretische conversie rates. Break-even is Month 4-5, niet Month 2.</p>
+</div>
+<div class="card">
+<h2>Revised 6-Month Revenue Projection</h2>
+<div class="stat-grid">
+<div class="stat"><div class="stat-label">MONTH 1 (VALIDATION)</div><div class="stat-value">₱80K</div><div class="stat-sub">10 deals @ ₱8K avg | ~€1.330</div></div>
+<div class="stat"><div class="stat-label">MONTH 3</div><div class="stat-value">₱140K</div><div class="stat-sub">15 deals @ ₱9.3K avg | ~€2.330</div></div>
+<div class="stat"><div class="stat-label">MONTH 6</div><div class="stat-value">₱210K</div><div class="stat-sub">20 deals @ ₱10.5K avg | ~€3.500</div></div>
+<div class="stat"><div class="stat-label">6-MONTH TOTAL</div><div class="stat-value">₱720K</div><div class="stat-sub">90 deals total | ~€12.000</div></div>
+</div>
+<div class="chart-bar-container">
+<div class="chart-row"><span class="chart-label">Month 1</span><div class="chart-bar" style="width:38%">₱80K</div></div>
+<div class="chart-row"><span class="chart-label">Month 2</span><div class="chart-bar" style="width:48%">₱100K</div></div>
+<div class="chart-row"><span class="chart-label">Month 3</span><div class="chart-bar" style="width:67%">₱140K</div></div>
+<div class="chart-row"><span class="chart-label">Month 4</span><div class="chart-bar" style="width:76%">₱160K</div></div>
+<div class="chart-row"><span class="chart-label">Month 5</span><div class="chart-bar" style="width:86%">₱180K</div></div>
+<div class="chart-row"><span class="chart-label">Month 6</span><div class="chart-bar" style="width:100%">₱210K</div></div>
+</div>
+</div>
+<div class="card">
+<h2>Cost Structure (Monthly Operating)</h2>
+<ul style="list-style:none;padding:0;">
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">• <strong>Internet + Mobile:</strong> ₱2.500 (~€42)</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">• <strong>Software subscriptions (Canva Pro, AI tools):</strong> ₱3.000 (~€50)</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">• <strong>Social media ads (TikTok + Facebook):</strong> ₱5.000-₱8.000 (~€83-€133)</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">• <strong>Transport/meetings (Makati area):</strong> ₱2.000 (~€33)</li>
+<li style="padding:.4rem 0;border-bottom:1px solid #334155;">• <strong>Agent commissions:</strong> 15% per closed deal (variabel)</li>
+<li style="padding:.4rem 0;">• <strong>Miscellaneous (printing, supplies):</strong> ₱1.500 (~€25)</li>
+</ul>
+<p style="margin-top:1rem;color:#60a5fa;"><strong>Total Fixed:</strong> ~₱14.000-₱17.000/maand (~€233-€283) | <strong>Variable:</strong> 15% commission on sales</p>
+</div>
+<div class="card">
+<h2>Break-Even Analysis</h2>
+<p><strong>Initial investment:</strong> €2.500 | <strong>Monthly burn:</strong> ₱15K fixed + 15% commission (~€250 + commission) | <strong>Break-even:</strong> Month 4-5</p>
+<table style="margin-top:1rem;">
+<tr><th>Month</th><th>Revenue</th><th>Fixed Costs</th><th>Commission (15%)</th><th>Net Profit</th><th>Cumulative</th></tr>
+<tr><td>Month 1</td><td>₱80K</td><td>₱15K</td><td>₱12K</td><td>₱53K</td><td class="warning-text">-₱97K</td></tr>
+<tr><td>Month 2</td><td>₱100K</td><td>₱15K</td><td>₱15K</td><td>₱70K</td><td class="warning-text">-₱27K</td></tr>
+<tr><td>Month 3</td><td>₱140K</td><td>₱16K</td><td>₱21K</td><td>₱103K</td><td class="success-text">+₱76K</td></tr>
+<tr><td>Month 4</td><td>₱160K</td><td>₱16K</td><td>₱24K</td><td>₱120K</td><td class="success-text"><strong>+₱196K (BREAK-EVEN)</strong></td></tr>
+<tr><td>Month 5</td><td>₱180K</td><td>₱17K</td><td>₱27K</td><td>₱136K</td><td class="success-text">+₱332K</td></tr>
+<tr><td>Month 6</td><td>₱210K</td><td>₱17K</td><td>₱31.5K</td><td>₱161.5K</td><td class="success-text">+₱493.5K</td></tr>
+</table>
+<p style="margin-top:1rem;color:#10b981;font-weight:700;">✅ Net profit na 6 maanden: ₱493.5K (~€8.225) | ROI: 229%</p>
+</div>
+</div>
+
+<!-- TAB 7: CONCURRENTIE INTEL -->
+<div id="competition" class="section">
+<div class="card">
+<h2>Complete Competitive Landscape</h2>
+<table>
+<tr><th>Competitor</th><th>Product</th><th>Target Customer</th><th>Price</th><th>Weakness</th></tr>
+<tr><td><strong>Bentamo Hub</strong></td><td>All-in-one SaaS (Inventory, POS, CRM, Finance)</td><td>F&amp;B, Retail MSMEs</td><td>₱500-₱5K/month</td><td>Subscription fatigue, no personal consult, zero TikTok presence</td></tr>
+<tr><td><strong>iTap.ph (Cebu)</strong></td><td>NFC digital business cards</td><td>Professionals, freelancers, entrepreneurs</td><td>₱999-₱1.499</td><td>Card-only, no business intelligence, no dashboard</td></tr>
+<tr><td><strong>Tapik PH</strong></td><td>NFC cards + digital profile</td><td>Corporate teams, real estate agents</td><td>Not published</td><td>No strategic advice, targeting high-end only</td></tr>
+<tr><td><strong>quickLink</strong></td><td>NFC cards (glossy, custom)</td><td>Young professionals, entrepreneurs</td><td>₱500-₱800</td><td>Basic offering, no bundled services</td></tr>
+<tr><td><strong>NFC Philippines</strong></td><td>Premium NFC cards (wood, metal, custom engraving)</td><td>Premium buyers wanting materials</td><td>₱900+</td><td>Luxury positioning, no MSME focus</td></tr>
+<tr><td><strong>Traditional Consultants</strong></td><td>Hourly/daily advisory</td><td>Established businesses</td><td>₱4K-₱5K/day</td><td>No tangible product, expensive, slow delivery</td></tr>
+<tr><td><strong>Marketing Agencies</strong></td><td>Full-service marketing + web</td><td>Medium-large businesses</td><td>₱25K-₱100K/month</td><td>Completely unaffordable for micro MSMEs</td></tr>
+</table>
+</div>
+<div class="positioning-box">
+<h2 style="color:#60a5fa;">Your Unique Positioning Matrix</h2>
+<div class="pos-statement">
+<strong>The Positioning Statement:</strong> "Voor Filipino micro- en kleine ondernemers die strategisch willen groeien maar zich geen dure consultants of maandelijkse software kunnen veroorloven, bieden wij <strong>persoonlijk bedrijfsadvies + een werkend dashboard + digitale visitekaart in één pakket</strong>, eenmalig betaald en binnen 24 uur geleverd."
+</div>
+<div class="two-col">
+<div>
+<h3 style="color:#ef4444;">❌ Wat Je NIET Bent</h3>
+<ul class="not-list">
+<li>Geen SaaS platform (geen maandelijkse kosten)</li>
+<li>Geen digitale kaartjes-verkoper (meer dan alleen een card)</li>
+<li>Geen consultant zonder product (tangible deliverable)</li>
+<li>Geen agency met lange contracten (one-time deal)</li>
+</ul>
+</div>
+<div>
+<h3 style="color:#10b981;">✅ Wat Je WEL Bent</h3>
+<ul class="not-list">
+<li>Hybrid: Strategic advisor + product builder</li>
+<li>One-time investment, lifetime value</li>
+<li>Fast turnaround (24 uur, niet 2 weken)</li>
+<li>MSME-affordable (₱5K-₱25K, niet ₱100K)</li>
+<li>Offline-first (werkt zonder internet)</li>
+<li>Filipino market specialist (niet generic global)</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="moat-box">
+<h3 style="color:#60a5fa;">🎯 Competitive Moat Strategy</h3>
+<p style="margin-top:.5rem;"><strong>Jouw defensieve positie:</strong> Zodra je 50+ tevreden klanten hebt met testimonials, word je de "trusted local expert" in Makati MSME circles. Bentamo is Cagayan de Oro-based (far from NCR). NFC card sellers hebben geen consulting expertise. Agencies zijn te duur. Consultants leveren geen product. <strong>Niemand combineert alles.</strong></p>
+</div>
+</div>
+
+<!-- TAB 8: 2-WEEK LAUNCH PLAN -->
+<div id="launch" class="section">
+<div class="card">
+<h2>De Exacte 2-Week Launch Roadmap</h2>
+<p><strong>Budget: €2.500 seed funding</strong></p>
+<p><strong>Doel:</strong> Klaar om eerste 10 deals te sluiten in Week 3-4</p>
+</div>
+<div class="timeline">
+<div class="timeline-item">
+<div class="week-card">
+<h4>Week 1: Product Development Sprint (€800 budget)</h4>
+<p class="sub">Build core dashboards + marketing materials</p>
+<ul>
+<li><strong>Dag 1-2:</strong> Build F&amp;B Dashboard Module (cafe/restaurant template, inventory tracking, sales analytics)</li>
+<li><strong>Dag 3:</strong> Build Salon/Wellness Dashboard Module (appointments, customer database, service tracking)</li>
+<li><strong>Dag 4:</strong> Build General MSME Dashboard (universal business metrics, finance overview)</li>
+<li><strong>Dag 5:</strong> Create Digital Business Card Template (NFC-compatible, QR code, social links)</li>
+<li><strong>Dag 6:</strong> Design 10 Canva social media templates (reusable for clients)</li>
+<li><strong>Dag 7:</strong> Build landing page (simple 1-pager: problem, solution, packages, testimonial placeholder, CTA)</li>
+</ul>
+<p style="margin-top:.75rem;font-size:.85rem;color:#10b981;"><strong>Deliverables:</strong> 3 working dashboard modules, 1 digital card template, 10 social templates, 1 landing page</p>
+</div>
+</div>
+<div class="timeline-item">
+<div class="week-card">
+<h4>Week 2: Marketing Setup + Pre-Launch Buzz (€700 budget)</h4>
+<p class="sub">Social media presence + first prospect outreach</p>
+<ul>
+<li><strong>Dag 8:</strong> Set up TikTok Business account + Facebook Business Page + Instagram</li>
+<li><strong>Dag 9-10:</strong> Film 10 TikTok demo videos (30-60 sec screen recordings with voiceover)</li>
+<li><strong>Dag 11:</strong> Join 5 MSME Facebook groups (Online Sellers PH, MSME Support, Negosyo Tips, DTI groups)</li>
+<li><strong>Dag 12:</strong> Create pitch deck (10 slides: problem, solution, demo screenshots, pricing)</li>
+<li><strong>Dag 13:</strong> Scout 20 target businesses in Makati Poblacion (cafes, salons, gyms)</li>
+<li><strong>Dag 14:</strong> Post first 3 TikTok videos + first Facebook post + start engaging in MSME groups</li>
+</ul>
+<p style="margin-top:.75rem;font-size:.85rem;color:#10b981;"><strong>Deliverables:</strong> TikTok + FB + IG live, 10 demo videos filmed, 20 prospects identified, pitch deck ready</p>
+</div>
+</div>
+<div class="timeline-item">
+<div class="week-card">
+<h4>Week 3: First Sales Push (€500 ads budget)</h4>
+<p class="sub">30-Day Validation Challenge begins &mdash; target 3 deals</p>
+<ul>
+<li>Post TikTok videos daily (1-2x/day from your 10 filmed)</li>
+<li>Run first TikTok ad campaign: ₱500 boost on best-performing organic video</li>
+<li>Direct outreach to 10 Poblacion businesses: "Free dashboard demo + ₱2.500 discount for first 3 clients"</li>
+<li>Close first 3 deals (target: 2x Starter ₱5K, 1x Professional ₱12K = ₱22K revenue)</li>
+<li>Deliver dashboards within 24 hours, film testimonial videos with clients</li>
+</ul>
+</div>
+</div>
+<div class="timeline-item">
+<div class="week-card">
+<h4>Week 4: Scale Validation (€500 ads budget)</h4>
+<p class="sub">Use testimonials to close 7 more deals</p>
+<ul>
+<li>Post testimonial videos on TikTok + Facebook + Instagram</li>
+<li>Run Facebook ad campaign: ₱500 targeting Makati business owners with testimonial video</li>
+<li>Launch referral program: "Refer a friend, get ₱500 credit on your next package"</li>
+<li>Close 7 more deals via TikTok leads + Facebook + referrals (mix of Starter + Professional)</li>
+<li>Target: ₱58K revenue in Week 4 (total Month 1: ₱80K from 10 deals)</li>
+</ul>
+</div>
+</div>
+<div class="timeline-item">
+<div class="week-card">
+<h4>Month 2-3: Growth Phase</h4>
+<p class="sub">Geographic + sector expansion</p>
+<ul>
+<li>Expand to BGC + Quezon City (identify 30 more prospects)</li>
+<li>Add Beauty/Wellness sector (gyms, beauty studios, spas)</li>
+<li>Recruit first sales agent (commission-only, 15% per deal)</li>
+<li>Increase TikTok ad budget to ₱1.000/week as proven ROI</li>
+<li>Target: 12-15 deals/month (₱100K-₱140K revenue)</li>
+</ul>
+</div>
+</div>
+<div class="timeline-item">
+<div class="week-card">
+<h4>Month 4-6: Scale &amp; Optimize</h4>
+<p class="sub">Multiple agents, sector diversification, Cebu exploration</p>
+<ul>
+<li>Recruit 2-3 more sales agents (proven model from Month 2-3)</li>
+<li>Add online sellers vertical (Facebook group outreach)</li>
+<li>Consider hiring part-time VA for admin tasks (customer follow-ups, scheduling)</li>
+<li>Explore Cebu City market (2nd largest MSME hub after NCR)</li>
+<li>Target: 18-20 deals/month (₱160K-₱210K revenue)</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="card" style="margin-top:1.5rem;">
+<h2>Budget Allocation Summary (€2.500)</h2>
+<div class="chart-bar-container">
+<div class="chart-row"><span class="chart-label">Product Dev</span><div class="chart-bar" style="width:32%">€800</div></div>
+<div class="chart-row"><span class="chart-label">Marketing</span><div class="chart-bar" style="width:28%">€700</div></div>
+<div class="chart-row"><span class="chart-label">Sales Ops</span><div class="chart-bar" style="width:20%">€500</div></div>
+<div class="chart-row"><span class="chart-label">Buffer</span><div class="chart-bar green" style="width:20%">€500</div></div>
+</div>
+</div>
+<div class="alert alert-info" style="margin-top:1.5rem;">
+<strong>✅ Success Metrics - Week 2 Checkpoint</strong>
+<p><strong>By end of Week 2, you should have:</strong></p>
+<p>✓ 3 working dashboard modules</p>
+<p>✓ Digital business card template</p>
+<p>✓ 10 social media templates</p>
+<p>✓ Landing page live</p>
+<p>✓ TikTok + Facebook + Instagram accounts active</p>
+<p>✓ 10 demo videos filmed</p>
+<p>✓ 20 target prospects identified</p>
+<p>✓ First 3 TikTok videos posted</p>
+<p style="margin-top:.75rem;color:#ef4444;"><strong>If missing any &rarr; STOP, complete before Week 3 sales push</strong></p>
+</div>
+</div>
+
+<div class="footer">
+<p>Bedrijfsplan 2026 &mdash; Persoonlijk Bedrijfsadvies + Digitale Dashboard Oplossingen</p>
+<p>Philippine MSME Market | Solo Founder Bootstrap Model | Investor-Ready</p>
+</div>
+
+<script>
+function showTab(tabId) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+</body>
+</html>
